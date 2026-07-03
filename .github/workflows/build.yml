@@ -12,6 +12,8 @@ jobs:
   build:
     name: '-'
     uses: frankbuttigieg1993-gmail/cicd/.github/workflows/java-build.yml@main
+    permissions:
+      id-token: write
     secrets:
            aws-access-key-id: ${{ secrets.AWS_GITHUB_ACCESS_KEY_ID }}
            aws-secret-access-key: ${{ secrets.AWS_GITHUB_SECRET_ACCESS_KEY_ID }}
