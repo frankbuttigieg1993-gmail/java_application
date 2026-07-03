@@ -10,6 +10,7 @@ on:
 
 jobs:
   build:
+    name: '-'
     uses: frankbuttigieg1993-gmail/cicd/.github/workflows/java-build.yml@main
     secrets:
            aws-access-key-id: ${{ secrets.AWS_GITHUB_ACCESS_KEY_ID }}
