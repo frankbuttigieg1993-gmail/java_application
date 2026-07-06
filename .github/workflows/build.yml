@@ -14,11 +14,11 @@ jobs:
     uses: frankbuttigieg1993-gmail/cicd/.github/workflows/java-build.yml@main
     permissions:
       id-token: write
-      contents: read  # Required for checkout
+      contents: write 
     secrets:
-           aws-access-key-id: ${{ secrets.AWS_GITHUB_ACCESS_KEY_ID }}
-           aws-secret-access-key: ${{ secrets.AWS_GITHUB_SECRET_ACCESS_KEY_ID }}
-           runner_default: ubuntu-latest
-           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      aws-access-key-id: ${{ secrets.AWS_GITHUB_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.AWS_GITHUB_SECRET_ACCESS_KEY_ID }}
+      runner_default: ubuntu-latest
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 ### TODO - Look up Secret Inheritence
