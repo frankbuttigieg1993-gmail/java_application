@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="com.example.MyTestSuite" tests="3" failures="1" errors="0" skipped="1" time="0.123">
+    <properties>
+      <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+      <!-- Other system properties -->
+    </properties>
+    <testcase name="testSuccess" classname="com.example.MyTestClass" time="0.050"/>
+    <testcase name="testFailure" classname="com.example.MyTestClass" time="0.030">
+      <failure message="Expected value not found" type="java.lang.AssertionError">
+        <![CDATA[
+        java.lang.AssertionError: Expected value not found
+            at com.example.MyTestClass.testFailure(MyTestClass.java:15)
+            at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+            <!-- More stack trace lines -->
+        ]]>
+      </failure>
+    </testcase>
+    <testcase name="testSkipped" classname="com.example.MyTestClass" time="0.000">
+      <skipped/>
+    </testcase>
+  </testsuite>
+  <!-- More testsuite elements for other test suites if applicable -->
+</testsuites>
