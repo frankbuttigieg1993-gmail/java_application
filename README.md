@@ -6,7 +6,7 @@ A minimal Spring Boot project that:
 - uses Gradle
 - includes unit tests
 - exposes a health endpoint
-- logs the value of a runtime environment variable
+- logs the value of a runtime environment variable every 5 seconds
 - includes a Dockerfile
 
 ## Runtime environment variable
@@ -34,6 +34,8 @@ gradle bootRun --args='--spring.profiles.active=dev'
 gradle bootRun --args='--spring.profiles.active=staging'
 gradle bootRun --args='--spring.profiles.active=prod'
 ```
+
+The application runs continuously and prints the environment variable value every 5 seconds.
 
 ## Health check
 

@@ -24,13 +24,16 @@ public class RuntimeEnvLogger {
         return environment.getProperty(envVarName);
     }
 
-    public void logConfiguredEnvironmentVariable() {
+    public String describeRuntimeValue() {
         String value = readRuntimeValue();
         if (value == null || value.isBlank()) {
-            log.info("Environment variable {} is not set", envVarName);
-        } else {
-            log.info("Environment variable {}={}", envVarName, value);
+            return "Environment variable " + envVarName + " is not set";
         }
+        return "Environment variable " + envVarName + "=" + value;
+    }
+
+    public void logConfiguredEnvironmentVariable() {
+        log.info("{}", describeRuntimeValue());
     }
 
     public String getEnvVarName() {
