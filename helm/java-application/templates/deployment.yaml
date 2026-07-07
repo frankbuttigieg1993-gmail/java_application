@@ -42,7 +42,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           - name: APP_RUNTIME_VALUE
-            value: {{ .Values.APP_RUNTIME_VALUE }}
+            value: {{ .Values.env.APP_RUNTIME_VALUE }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
