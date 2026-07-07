@@ -19,5 +19,3 @@ jobs:
     permissions:
       id-token: write
       contents: write 
-    secrets:
-      runner_default: ubuntu-latest
