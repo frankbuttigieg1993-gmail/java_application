@@ -11,13 +11,13 @@ on:
 jobs:
   build:
     name: '-'
+    runs-on: ubuntu-latest
     uses: frankbuttigieg1993-gmail/cicd/.github/workflows/java-build-codequal.yml@main
     permissions:
       id-token: write
       contents: write 
       security-events: write
       actions: read
-    secrets:
-      runner_default: ubuntu-latest
+
 
 ### TODO - Look up Secret Inheritence
