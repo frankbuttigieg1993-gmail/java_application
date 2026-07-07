@@ -17,6 +17,5 @@ jobs:
       contents: write 
     secrets:
       runner_default: ubuntu-latest
-      # GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 ### TODO - Look up Secret Inheritence
