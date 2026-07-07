@@ -1,0 +1,95 @@
+---
+# Source: java-application/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: java-application
+  labels:
+    helm.sh/chart: java-application-0.1.0
+    app.kubernetes.io/name: java-application
+    app.kubernetes.io/instance: java-application
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+automountServiceAccountToken: true
+---
+# Source: java-application/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-application
+  labels:
+    helm.sh/chart: java-application-0.1.0
+    app.kubernetes.io/name: java-application
+    app.kubernetes.io/instance: java-application
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: java-application
+    app.kubernetes.io/instance: java-application
+---
+# Source: java-application/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-application
+  labels:
+    helm.sh/chart: java-application-0.1.0
+    app.kubernetes.io/name: java-application
+    app.kubernetes.io/instance: java-application
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: java-application
+      app.kubernetes.io/instance: java-application
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: java-application-0.1.0
+        app.kubernetes.io/name: java-application
+        app.kubernetes.io/instance: java-application
+        app.kubernetes.io/version: "1.16.0"
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      serviceAccountName: java-application
+      containers:
+        - name: java-application
+          image: "865983312994.dkr.ecr.ap-southeast-2.amazonaws.com/java-application:1.0.0.51"
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: APP_RUNTIME_VALUE
+            value: development
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+---
+# Source: java-application/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "java-application-test-connection"
+  labels:
+    helm.sh/chart: java-application-0.1.0
+    app.kubernetes.io/name: java-application
+    app.kubernetes.io/instance: java-application
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['java-application:80']
+  restartPolicy: Never
