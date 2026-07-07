@@ -1,4 +1,4 @@
-name: Build Pipeline
+name: Build Code Quality Pipeline
 run-name: ${{ github.ref_name }}.${{ github.run_number }}
 
 on:
@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     name: '-'
-    uses: frankbuttigieg1993-gmail/cicd/.github/workflows/java-build.yml@main
+    uses: frankbuttigieg1993-gmail/cicd/.github/workflows/java-build-codequal.yml@main
     permissions:
       id-token: write
       contents: write 
