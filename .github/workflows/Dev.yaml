@@ -1,0 +1,23 @@
+name: Dev Deployment Pipeline
+run-name: ${{ github.ref_name }}.${{ github.run_number }}
+
+on:
+  # push:
+  #   branches:
+  #     - main
+  #     - 'release/**'
+  workflow_dispatch:
+    inputs:
+      docker_tag:
+        description: 'Docker image tag to deploy'
+        required: true
+        default: 'latest'
+jobs:
+  Deploy:
+    name: '-'
+    uses: frankbuttigieg1993-gmail/cicd/.github/workflows/Java/Dev.yaml@main
+    permissions:
+      id-token: write
+      contents: write 
+    secrets:
+      runner_default: ubuntu-latest
