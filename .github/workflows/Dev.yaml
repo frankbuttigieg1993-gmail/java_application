@@ -15,7 +15,7 @@ on:
 jobs:
   Deploy:
     name: '-'
-    uses: frankbuttigieg1993-gmail/cicd/.github/workflows/Java/Dev.yaml@main
+    uses: frankbuttigieg1993-gmail/cicd/.github/workflows/Java-Deployment-Dev.yaml@main
     permissions:
       id-token: write
       contents: write 
