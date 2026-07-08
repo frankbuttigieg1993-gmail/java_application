@@ -1,58 +1,29 @@
-# Env Printer Spring Boot
+# Env Printer Spring Boot Project
 
-A minimal Spring Boot project that:
-
-- supports Dev, Staging, and Production environment files
-- uses Gradle
+This app:
+- starts a Spring Boot web server
+- exposes `/health`
+- logs `APP_RUNTIME_VALUE` every 5 seconds
+- includes Dev / Staging / Prod profile files
 - includes unit tests
-- exposes a health endpoint
-- logs the value of a runtime environment variable every 5 seconds
+- generates JaCoCo coverage reports
 - includes a Dockerfile
-
-## Runtime environment variable
-
-By default the app looks for `APP_RUNTIME_VALUE`.
-
-You can change the name in `src/main/resources/application.yml` under:
-
-```yaml
-app:
-  runtime-env-name: APP_RUNTIME_VALUE
-```
 
 ## Run locally
 
 ```bash
-export APP_RUNTIME_VALUE=hello
-gradle bootRun
+APP_RUNTIME_VALUE=hello ./gradlew bootRun
 ```
 
-To choose a profile:
+## Build and test
 
 ```bash
-gradle bootRun --args='--spring.profiles.active=dev'
-gradle bootRun --args='--spring.profiles.active=staging'
-gradle bootRun --args='--spring.profiles.active=prod'
-```
-
-The application runs continuously and prints the environment variable value every 5 seconds.
-
-## Health check
-
-- Custom health endpoint: `GET /health`
-- Actuator health endpoint: `GET /actuator/health`
-
-## Tests
-
-```bash
-gradle test
+./gradlew clean test jacocoTestReport jacocoTestCoverageVerification
 ```
 
 ## Docker
 
-Build and run:
-
 ```bash
-docker build -t env-printer-springboot .
-docker run --rm -e APP_RUNTIME_VALUE=hello env-printer-springboot
+docker build -t env-printer .
+docker run -e APP_RUNTIME_VALUE=hello -p 8080:8080 env-printer
 ```

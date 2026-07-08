@@ -1,6 +1,8 @@
 spring:
   application:
-    name: env-printer-springboot
+    name: env-printer
+  profiles:
+    active: dev
 
 management:
   endpoints:
@@ -9,7 +11,5 @@ management:
         include: health,info
   endpoint:
     health:
-      show-details: always
-
-app:
-  runtime-env-name: APP_RUNTIME_VALUE
+      probes:
+        enabled: true

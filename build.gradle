@@ -2,11 +2,12 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.14'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'jacoco'
 }
 
 group = 'com.example'
 version = '1.0.0'
-description = 'Env Printer Spring Boot demo'
+description = 'env-printer-springboot-project'
 
 java {
     toolchain {
@@ -27,4 +28,31 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    finalizedBy tasks.named('jacocoTestReport')
 }
+
+jacoco {
+    toolVersion = '0.8.12'
+}
+
+tasks.jacocoTestReport {
+    dependsOn tasks.test
+    reports {
+        html.required = true
+        xml.required = true
+        csv.required = false
+    }
+}
+
+tasks.jacocoTestCoverageVerification {
+    dependsOn tasks.test
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.70
+            }
+        }
+    }
+}
+
+check.dependsOn tasks.jacocoTestCoverageVerification

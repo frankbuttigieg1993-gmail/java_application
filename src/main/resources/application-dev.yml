@@ -1,10 +1,2 @@
-logging:
-  level:
-    root: DEBUG
-    com.example.envprinter: DEBUG
-
-server:
-  port: 8081
-
 app:
-  profile-name: dev
+  environment: dev
