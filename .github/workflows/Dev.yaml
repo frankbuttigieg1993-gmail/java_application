@@ -21,3 +21,4 @@ jobs:
       contents: write 
     secrets:
       GH_PAT_TOKEN: ${{ secrets.GH_PAT_TOKEN }} # Map the actual secret to the input key
+      GH_PRIVATE_SSH_KEY: ${{ secrets.GH_PRIVATE_SSH_KEY }}
