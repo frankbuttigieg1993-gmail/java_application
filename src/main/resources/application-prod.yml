@@ -1,5 +1,2 @@
-logging:
-  level:
-    root: WARN
 app:
-  profile-name: prod
+  environment: prod

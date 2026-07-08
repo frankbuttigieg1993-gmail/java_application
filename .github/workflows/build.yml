@@ -18,5 +18,3 @@ jobs:
       security-events: write
     secrets:
       runner_default: ubuntu-latest
-
-### TODO - Look up Secret Inheritence

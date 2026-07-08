@@ -10,7 +10,7 @@ plugins {
 
 group = 'com.example'
 version = '1.0.0'
-description = 'Env Printer Spring Boot demo'
+description = 'env-printer-springboot-project'
 
 java {
     toolchain {
@@ -38,23 +38,17 @@ jacoco {
     toolVersion = '0.8.12'
 }
 
-tasks.named('jacocoTestReport', JacocoReport) {
-    dependsOn tasks.named('test')
-
+tasks.jacocoTestReport {
+    dependsOn tasks.test
     reports {
         html.required = true
         xml.required = true
         csv.required = false
     }
-
-    classDirectories.setFrom(files(classDirectories.files.collect { fileTree(dir: it, exclude: [
-            '**/EnvPrinterApplication.class'
-    ]) }))
 }
 
-tasks.named('jacocoTestCoverageVerification', JacocoCoverageVerification) {
-    dependsOn tasks.named('test')
-
+tasks.jacocoTestCoverageVerification {
+    dependsOn tasks.test
     violationRules {
         rule {
             limit {
@@ -63,3 +57,5 @@ tasks.named('jacocoTestCoverageVerification', JacocoCoverageVerification) {
         }
     }
 }
+
+check.dependsOn tasks.jacocoTestCoverageVerification
