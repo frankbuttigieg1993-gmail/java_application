@@ -19,8 +19,5 @@ jobs:
     permissions:
       id-token: write
       contents: write 
-<<<<<<< Updated upstream
-=======
     secrets:
       GH_PAT_TOKEN: ${{ secrets.GH_PAT_TOKEN }} # Map the actual secret to the input key
->>>>>>> Stashed changes
