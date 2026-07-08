@@ -2,14 +2,14 @@ spring:
   application:
     name: env-printer-springboot
 
+server:
+  port: 8080
+
 management:
   endpoints:
     web:
       exposure:
         include: health,info
-  endpoint:
-    health:
-      show-details: always
 
 app:
   runtime-env-name: APP_RUNTIME_VALUE

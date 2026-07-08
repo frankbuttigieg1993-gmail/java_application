@@ -1,1 +1,1 @@
-git add . && git commit -am "Commit" && git push origin release/1.0.0
+echo "hello" >> test.txt && git add . && git commit -am "Commit" && git push origin release/1.0.0

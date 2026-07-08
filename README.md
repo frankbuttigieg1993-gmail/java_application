@@ -5,6 +5,7 @@ A minimal Spring Boot project that:
 - supports Dev, Staging, and Production environment files
 - uses Gradle
 - includes unit tests
+- includes JaCoCo code coverage reporting
 - exposes a health endpoint
 - logs the value of a runtime environment variable every 5 seconds
 - includes a Dockerfile
@@ -42,10 +43,24 @@ The application runs continuously and prints the environment variable value ever
 - Custom health endpoint: `GET /health`
 - Actuator health endpoint: `GET /actuator/health`
 
-## Tests
+## Tests and coverage
+
+Run tests:
 
 ```bash
 gradle test
+```
+
+Generate the JaCoCo coverage report:
+
+```bash
+gradle jacocoTestReport
+```
+
+The HTML report is generated at:
+
+```text
+build/reports/jacoco/test/html/index.html
 ```
 
 ## Docker

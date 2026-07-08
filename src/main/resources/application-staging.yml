@@ -1,10 +1,5 @@
 logging:
   level:
     root: INFO
-    com.example.envprinter: INFO
-
-server:
-  port: 8082
-
 app:
   profile-name: staging
