@@ -15,7 +15,12 @@ jobs:
     permissions:
       id-token: write
       contents: write 
+<<<<<<< Updated upstream
     secrets:
       runner_default: ubuntu-latest
 
 ### TODO - Look up Secret Inheritence
+=======
+      security-events: write
+    secrets: inherit
+>>>>>>> Stashed changes
