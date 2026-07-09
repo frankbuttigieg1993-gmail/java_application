@@ -20,6 +20,6 @@ jobs:
       target-runner: "[self-hosted, linux, x64]"
     secrets:
       GH_PAT_TOKEN: ${{ secrets.GH_PAT_TOKEN }} # Map the actual secret to the input key
-      aws-access-key-id: ${{ secrets.AWS_GITHUB_ACCESS_KEY_ID }}
-      aws-secret-access-key: ${{ secrets.AWS_GITHUB_SECRET_ACCESS_KEY_ID }}
+      AWS_GITHUB_ACCESS_KEY_ID: ${{ secrets.AWS_GITHUB_ACCESS_KEY_ID }}
+      AWS_GITHUB_SECRET_ACCESS_KEY_ID: ${{ secrets.AWS_GITHUB_SECRET_ACCESS_KEY_ID }}
     
