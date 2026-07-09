@@ -16,6 +16,7 @@ jobs:
       id-token: write
       contents: write 
       security-events: write
+      actions: write
     secrets:
       GH_PAT_TOKEN: ${{ secrets.GH_PAT_TOKEN }} # Map the actual secret to the input key
       AWS_GITHUB_ACCESS_KEY_ID: ${{ secrets.AWS_GITHUB_ACCESS_KEY_ID }}
