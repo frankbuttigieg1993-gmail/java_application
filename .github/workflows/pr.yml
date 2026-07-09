@@ -1,5 +1,5 @@
 name: PR Pipeline
-run-name: ${{ github.ref_name }}.${{ github.run_number }}
+run-name: PR-${{ github.event.pull_request.number }}-${{ github.event.pull_request.title }}
 
 on:
   pull_request:
