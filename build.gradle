@@ -48,10 +48,6 @@ tasks.jacocoTestReport {
     }
 }
 
-plugins {
-    id "org.sonarqube" version "6.0.0.5116"
-}
-
 sonar {
     properties {
         def propertiesFile = project.file("sonar-project.properties")
