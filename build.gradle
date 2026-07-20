@@ -4,7 +4,6 @@ import org.gradle.testing.jacoco.tasks.JacocoReport
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.14'
-    id "org.sonarqube" version "6.0.0.5116"
     id 'io.spring.dependency-management' version '1.1.7'
     id 'jacoco'
 }
@@ -48,20 +47,20 @@ tasks.jacocoTestReport {
     }
 }
 
-sonar {
-    properties {
-        def propertiesFile = project.file("sonar-project.properties")
-        if (propertiesFile.exists()) {
-            def props = new Properties()
-            propertiesFile.withInputStream { props.load(it) }
+// sonar {
+//     properties {
+//         def propertiesFile = project.file("sonar-project.properties")
+//         if (propertiesFile.exists()) {
+//             def props = new Properties()
+//             propertiesFile.withInputStream { props.load(it) }
             
-            // Dynamically inject all properties into the Sonar configuration block
-            props.each { key, value ->
-                property key, value
-            }
-        }
-    }
-}
+//             // Dynamically inject all properties into the Sonar configuration block
+//             props.each { key, value ->
+//                 property key, value
+//             }
+//         }
+//     }
+// }
 
 tasks.jacocoTestCoverageVerification {
     dependsOn tasks.test
