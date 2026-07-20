@@ -17,7 +17,7 @@ jobs:
       contents: write 
       security-events: write
     with:
-      target-runner: "[self-hosted, linux, x64]"
+      target-runner: "['self-hosted', 'linux', 'x64']"
     secrets:
       GH_PAT_TOKEN: ${{ secrets.GH_PAT_TOKEN }} 
       GH_PRIVATE_SSH_KEY: ${{ secrets.GH_PRIVATE_SSH_KEY }}

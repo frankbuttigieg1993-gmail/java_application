@@ -18,6 +18,6 @@ jobs:
       security-events: write
       actions: read
     with:
-      target-runner: "[self-hosted, linux, x64]"
+      target-runner: "['self-hosted', 'linux', 'x64']"
     secrets: inherit
 ### TODO - Look up Secret Inheritence
