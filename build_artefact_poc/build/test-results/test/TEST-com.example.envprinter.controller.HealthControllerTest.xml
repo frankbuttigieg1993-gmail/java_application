@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.envprinter.controller.HealthControllerTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-07-21T03:10:44.257Z" hostname="9f7e013d57e6" time="3.673">
+  <properties/>
+  <testcase name="healthEndpointReturnsOk()" classname="com.example.envprinter.controller.HealthControllerTest" time="1.468"/>
+  <system-out><![CDATA[2026-07-21T03:10:44.268Z  INFO 311 --- [env-printer] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.envprinter.controller.HealthControllerTest]: HealthControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-21T03:10:44.342Z  INFO 311 --- [env-printer] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.envprinter.EnvPrinterApplication for test class com.example.envprinter.controller.HealthControllerTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.14)
+
+2026-07-21T03:10:44.460Z  INFO 311 --- [env-printer] [    Test worker] c.e.e.controller.HealthControllerTest    : Starting HealthControllerTest using Java 21.0.11 with PID 311 (started by root in /__w/java_application/java_application)
+2026-07-21T03:10:44.461Z  INFO 311 --- [env-printer] [    Test worker] c.e.e.controller.HealthControllerTest    : The following 1 profile is active: "dev"
+2026-07-21T03:10:46.359Z  INFO 311 --- [env-printer] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-07-21T03:10:46.363Z  INFO 311 --- [env-printer] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-07-21T03:10:46.370Z  INFO 311 --- [env-printer] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-07-21T03:10:46.443Z  INFO 311 --- [env-printer] [    Test worker] c.e.e.controller.HealthControllerTest    : Started HealthControllerTest in 2.074 seconds (process running for 8.419)
+]]></system-out>
+  <system-err><![CDATA[Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/home/gradle/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.17.8/f09415827a71be7ed621c7bd02550678f28bc81c/byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+</testsuite>
