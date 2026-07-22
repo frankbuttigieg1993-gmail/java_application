@@ -6,6 +6,7 @@ plugins {
     id 'org.springframework.boot' version '3.5.14'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'jacoco'
+    id 'org.cyclonedx.bom' version '3.2.4'
 }
 
 group = 'com.example'
@@ -47,6 +48,17 @@ tasks.jacocoTestReport {
     }
 }
 
+tasks.jacocoTestCoverageVerification {
+    dependsOn tasks.test
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.70
+            }
+        }
+    }
+}
+
 // sonar {
 //     properties {
 //         def propertiesFile = project.file("sonar-project.properties")
@@ -62,15 +74,16 @@ tasks.jacocoTestReport {
 //     }
 // }
 
-tasks.jacocoTestCoverageVerification {
-    dependsOn tasks.test
-    violationRules {
-        rule {
-            limit {
-                minimum = 0.70
-            }
-        }
-    }
-}
-
 check.dependsOn tasks.jacocoTestCoverageVerification
+check.dependsOn tasks.named('cyclonedxBom')
+
+tasks.named('cyclonedxBom') {
+    // Optional, but valid:
+    projectType = 'application'
+
+    // Keep both outputs, or disable one with unsetConvention()
+    // jsonOutput = file("$buildDir/reports/cyclonedx/bom.json")
+    // xmlOutput = file("$buildDir/reports/cyclonedx/bom.xml")
+    jsonOutput = file("bom.json")
+    xmlOutput = file("bom.xml")
+}
