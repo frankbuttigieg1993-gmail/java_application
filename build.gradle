@@ -59,6 +59,10 @@ tasks.jacocoTestCoverageVerification {
     }
 }
 
+dependencyLocking {
+    lockAllConfigurations()
+}
+
 // sonar {
 //     properties {
 //         def propertiesFile = project.file("sonar-project.properties")
