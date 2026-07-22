@@ -1,13 +1,13 @@
 import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
 import org.gradle.testing.jacoco.tasks.JacocoReport
 
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.14'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'jacoco'
-    id 'org.cyclonedx.bom' version '3.3.0'
-    id "org.owasp.dependencycheck" version "12.1.8"
+    id 'org.cyclonedx.bom' version '1.10.0' // Check for the latest version
 }
 
 group = 'com.example'
@@ -27,13 +27,21 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.apache.commons:commons-lang3:3.14.0'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
     finalizedBy tasks.named('jacocoTestReport')
+}
+
+cycloneDxBom {
+    includeBomSerialNumber = true
+    // Output format can be "json", "xml", or "all"
+    outputFormat = "json" 
+    // Destination folder name inside the build directory
+    destination = file("build/reports/bom") 
 }
 
 jacoco {
@@ -49,14 +57,20 @@ tasks.jacocoTestReport {
     }
 }
 
-dependencyCheck {
-    format = "HTML"
-    nvd {
-        if (project.hasProperty('nvdApiKey')) {
-            apiKey = project.property('nvdApiKey')
-        }
-    }
-}
+// sonar {
+//     properties {
+//         def propertiesFile = project.file("sonar-project.properties")
+//         if (propertiesFile.exists()) {
+//             def props = new Properties()
+//             propertiesFile.withInputStream { props.load(it) }
+            
+//             // Dynamically inject all properties into the Sonar configuration block
+//             props.each { key, value ->
+//                 property key, value
+//             }
+//         }
+//     }
+// }
 
 tasks.jacocoTestCoverageVerification {
     dependsOn tasks.test
@@ -69,24 +83,4 @@ tasks.jacocoTestCoverageVerification {
     }
 }
 
-dependencyLocking {
-    lockAllConfigurations()
-}
-
 check.dependsOn tasks.jacocoTestCoverageVerification
-check.dependsOn tasks.named('cyclonedxBom')
-
-tasks.cyclonedxDirectBom {
-    schemaVersion = "VERSION_16"
-    includeMetadataResolution = true
-    includeConfigs = ["runtimeClasspath"]
-}
-
-// 2. Configure properties for the aggregated BOM task (handles multi-project roots)
-tasks.cyclonedxBom {
-    schemaVersion = "VERSION_16"
-    jsonOutput = file("$buildDir/reports/cyclonedx/bom.json")
-    xmlOutput = file("$buildDir/reports/cyclonedx/bom.xml")
-
-}
-

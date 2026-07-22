@@ -6,7 +6,7 @@ plugins {
     id 'org.springframework.boot' version '3.5.14'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'jacoco'
-    id 'org.cyclonedx.bom' version '3.3.0'
+    id 'org.cyclonedx.bom' version '3.2.4'
     id "org.owasp.dependencycheck" version "12.1.8"
 }
 
@@ -27,7 +27,7 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.apache.commons:commons-lang3:3.14.0'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
@@ -76,17 +76,11 @@ dependencyLocking {
 check.dependsOn tasks.jacocoTestCoverageVerification
 check.dependsOn tasks.named('cyclonedxBom')
 
-tasks.cyclonedxDirectBom {
-    schemaVersion = "VERSION_16"
-    includeMetadataResolution = true
-    includeConfigs = ["runtimeClasspath"]
-}
-
-// 2. Configure properties for the aggregated BOM task (handles multi-project roots)
-tasks.cyclonedxBom {
-    schemaVersion = "VERSION_16"
+tasks.named('cyclonedxBom') {
+    // Optional, but valid:
+    projectType = 'application'
+    // Keep both outputs, or disable one with unsetConvention()
     jsonOutput = file("$buildDir/reports/cyclonedx/bom.json")
     xmlOutput = file("$buildDir/reports/cyclonedx/bom.xml")
-
 }
 
