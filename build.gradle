@@ -8,7 +8,7 @@ plugins {
     id 'jacoco'
     id 'project-report' 
     id 'org.cyclonedx.bom' version '3.3.0'
-    id "org.owasp.dependencycheck" version "12.1.8"
+    id "org.owasp.dependencycheck" version "12.2.2"
 }
 
 group = 'com.example'
