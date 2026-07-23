@@ -1,0 +1,323 @@
+
+Report Summary
+
+┌─────────────────────────────────────────────────────┬────────────┬─────────────────┬───────────────────┬──────────┐
+│                       Target                        │    Type    │ Vulnerabilities │ Misconfigurations │ Licenses │
+├─────────────────────────────────────────────────────┼────────────┼─────────────────┼───────────────────┼──────────┤
+│ gradle.lockfile                                     │   gradle   │        9        │         -         │    -     │
+├─────────────────────────────────────────────────────┼────────────┼─────────────────┼───────────────────┼──────────┤
+│ Dockerfile                                          │ dockerfile │        -        │         1         │    -     │
+├─────────────────────────────────────────────────────┼────────────┼─────────────────┼───────────────────┼──────────┤
+│ Dockerfile.v1                                       │ dockerfile │        -        │         1         │    -     │
+├─────────────────────────────────────────────────────┼────────────┼─────────────────┼───────────────────┼──────────┤
+│ build-artefact/Dockerfile                           │ dockerfile │        -        │         1         │    -     │
+├─────────────────────────────────────────────────────┼────────────┼─────────────────┼───────────────────┼──────────┤
+│ build_artefact_poc/Dockerfile                       │ dockerfile │        -        │         1         │    -     │
+├─────────────────────────────────────────────────────┼────────────┼─────────────────┼───────────────────┼──────────┤
+│ helm/java-application/templates/deployment.yaml     │    helm    │        -        │         3         │    -     │
+├─────────────────────────────────────────────────────┼────────────┼─────────────────┼───────────────────┼──────────┤
+│ helm/java-application/templates/service.yaml        │    helm    │        -        │         0         │    -     │
+├─────────────────────────────────────────────────────┼────────────┼─────────────────┼───────────────────┼──────────┤
+│ helm/java-application/templates/serviceaccount.yaml │    helm    │        -        │         0         │    -     │
+├─────────────────────────────────────────────────────┼────────────┼─────────────────┼───────────────────┼──────────┤
+│ helm_template.yaml                                  │ kubernetes │        -        │         6         │    -     │
+└─────────────────────────────────────────────────────┴────────────┴─────────────────┴───────────────────┴──────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+
+For OSS Maintainers: VEX Notice
+--------------------------------
+If you're an OSS maintainer and Trivy has detected vulnerabilities in your project that you believe are not actually exploitable, consider issuing a VEX (Vulnerability Exploitability eXchange) statement.
+VEX allows you to communicate the actual status of vulnerabilities in your project, improving security transparency and reducing false positives for your users.
+Learn more and start using VEX: https://trivy.dev/docs/v0.72/guide/supply-chain/vex/repo#publishing-vex-documents
+
+To disable this notice, set the TRIVY_DISABLE_VEX_NOTICE environment variable.
+
+
+gradle.lockfile (gradle)
+========================
+Total: 9 (HIGH: 6, CRITICAL: 3)
+
+┌─────────────────────────────────────────────┬─────────────────────┬──────────┬────────┬───────────────────┬───────────────────────────┬──────────────────────────────────────────────────────────────┐
+│                   Library                   │    Vulnerability    │ Severity │ Status │ Installed Version │       Fixed Version       │                            Title                             │
+├─────────────────────────────────────────────┼─────────────────────┼──────────┼────────┼───────────────────┼───────────────────────────┼──────────────────────────────────────────────────────────────┤
+│ com.fasterxml.jackson.core:jackson-core     │ GHSA-r7wm-3cxj-wff9 │ HIGH     │ fixed  │ 2.21.2            │ 2.18.8, 2.21.4, 2.22.1    │ jackson-core: Async parser maxNumberLength bypass via        │
+│                                             │                     │          │        │                   │                           │ chunked digit accumulation (incomplete fix for...            │
+│                                             │                     │          │        │                   │                           │ https://github.com/advisories/GHSA-r7wm-3cxj-wff9            │
+├─────────────────────────────────────────────┼─────────────────────┤          │        │                   ├───────────────────────────┼──────────────────────────────────────────────────────────────┤
+│ com.fasterxml.jackson.core:jackson-databind │ CVE-2026-54512      │          │        │                   │ 2.18.8, 3.1.4, 2.21.4     │ jackson-databind: jackson-databind: Arbitrary code execution │
+│                                             │                     │          │        │                   │                           │ via PolymorphicTypeValidator bypass                          │
+│                                             │                     │          │        │                   │                           │ https://avd.aquasec.com/nvd/cve-2026-54512                   │
+│                                             ├─────────────────────┤          │        │                   ├───────────────────────────┼──────────────────────────────────────────────────────────────┤
+│                                             │ CVE-2026-54513      │          │        │                   │ 2.18.8, 2.21.4, 3.1.4     │ jackson-databind: Jackson-databind: Security bypass allows   │
+│                                             │                     │          │        │                   │                           │ arbitrary code execution                                     │
+│                                             │                     │          │        │                   │                           │ https://avd.aquasec.com/nvd/cve-2026-54513                   │
+├─────────────────────────────────────────────┼─────────────────────┼──────────┤        ├───────────────────┼───────────────────────────┼──────────────────────────────────────────────────────────────┤
+│ org.apache.tomcat.embed:tomcat-embed-core   │ CVE-2026-41293      │ CRITICAL │        │ 10.1.54           │ 9.0.118, 10.1.55, 11.0.22 │ tomcat-coyote: Apache Tomcat: HTTP/2 request headers not     │
+│                                             │                     │          │        │                   │                           │ validated                                                    │
+│                                             │                     │          │        │                   │                           │ https://avd.aquasec.com/nvd/cve-2026-41293                   │
+│                                             ├─────────────────────┤          │        │                   │                           ├──────────────────────────────────────────────────────────────┤
+│                                             │ CVE-2026-43512      │          │        │                   │                           │ tomcat-coyote: Apache Tomcat: Authentication bypass via      │
+│                                             │                     │          │        │                   │                           │ digest authentication                                        │
+│                                             │                     │          │        │                   │                           │ https://avd.aquasec.com/nvd/cve-2026-43512                   │
+│                                             ├─────────────────────┤          │        │                   │                           ├──────────────────────────────────────────────────────────────┤
+│                                             │ CVE-2026-43515      │          │        │                   │                           │ tomcat-coyote: tomcat: Improper Authorization allows         │
+│                                             │                     │          │        │                   │                           │ security bypass                                              │
+│                                             │                     │          │        │                   │                           │ https://avd.aquasec.com/nvd/cve-2026-43515                   │
+│                                             ├─────────────────────┼──────────┤        │                   │                           ├──────────────────────────────────────────────────────────────┤
+│                                             │ CVE-2026-41284      │ HIGH     │        │                   │                           │ tomcat: Apache Tomcat: Denial of Service due to uncontrolled │
+│                                             │                     │          │        │                   │                           │ resource allocation                                          │
+│                                             │                     │          │        │                   │                           │ https://avd.aquasec.com/nvd/cve-2026-41284                   │
+│                                             ├─────────────────────┤          │        │                   │                           ├──────────────────────────────────────────────────────────────┤
+│                                             │ CVE-2026-42498      │          │        │                   │                           │ tomcat-coyote: Apache Tomcat: Information disclosure due to  │
+│                                             │                     │          │        │                   │                           │ HTTP Authentication Header exposure during...                │
+│                                             │                     │          │        │                   │                           │ https://avd.aquasec.com/nvd/cve-2026-42498                   │
+│                                             ├─────────────────────┤          │        │                   │                           ├──────────────────────────────────────────────────────────────┤
+│                                             │ CVE-2026-43513      │          │        │                   │                           │ tomcat-catalina: Apache Tomcat: Improper Handling of Case    │
+│                                             │                     │          │        │                   │                           │ Sensitivity in LockOutRealm                                  │
+│                                             │                     │          │        │                   │                           │ https://avd.aquasec.com/nvd/cve-2026-43513                   │
+└─────────────────────────────────────────────┴─────────────────────┴──────────┴────────┴───────────────────┴───────────────────────────┴──────────────────────────────────────────────────────────────┘
+
+Dockerfile (dockerfile)
+=======================
+Tests: 20 (SUCCESSES: 19, FAILURES: 1)
+Failures: 1 (HIGH: 1, CRITICAL: 0)
+
+DS-0002 (HIGH): Specify at least 1 USER command in Dockerfile with non-root user as argument
+════════════════════════════════════════
+Running containers with 'root' user can lead to a container escape situation. It is a best practice to run containers as non-root users, which can be done by adding a 'USER' statement to the Dockerfile.
+
+See https://avd.aquasec.com/misconfig/ds-0002
+────────────────────────────────────────
+
+
+
+Dockerfile.v1 (dockerfile)
+==========================
+Tests: 20 (SUCCESSES: 19, FAILURES: 1)
+Failures: 1 (HIGH: 1, CRITICAL: 0)
+
+DS-0002 (HIGH): Specify at least 1 USER command in Dockerfile with non-root user as argument
+════════════════════════════════════════
+Running containers with 'root' user can lead to a container escape situation. It is a best practice to run containers as non-root users, which can be done by adding a 'USER' statement to the Dockerfile.
+
+See https://avd.aquasec.com/misconfig/ds-0002
+────────────────────────────────────────
+
+
+
+build-artefact/Dockerfile (dockerfile)
+======================================
+Tests: 20 (SUCCESSES: 19, FAILURES: 1)
+Failures: 1 (HIGH: 1, CRITICAL: 0)
+
+DS-0002 (HIGH): Specify at least 1 USER command in Dockerfile with non-root user as argument
+════════════════════════════════════════
+Running containers with 'root' user can lead to a container escape situation. It is a best practice to run containers as non-root users, which can be done by adding a 'USER' statement to the Dockerfile.
+
+See https://avd.aquasec.com/misconfig/ds-0002
+────────────────────────────────────────
+
+
+
+build_artefact_poc/Dockerfile (dockerfile)
+==========================================
+Tests: 20 (SUCCESSES: 19, FAILURES: 1)
+Failures: 1 (HIGH: 1, CRITICAL: 0)
+
+DS-0002 (HIGH): Specify at least 1 USER command in Dockerfile with non-root user as argument
+════════════════════════════════════════
+Running containers with 'root' user can lead to a container escape situation. It is a best practice to run containers as non-root users, which can be done by adding a 'USER' statement to the Dockerfile.
+
+See https://avd.aquasec.com/misconfig/ds-0002
+────────────────────────────────────────
+
+
+
+helm/java-application/templates/deployment.yaml (helm)
+======================================================
+Tests: 23 (SUCCESSES: 20, FAILURES: 3)
+Failures: 3 (HIGH: 3, CRITICAL: 0)
+
+KSV-0014 (HIGH): Container 'java-application' of Deployment 'java-application' should set 'securityContext.readOnlyRootFilesystem' to true
+════════════════════════════════════════
+An immutable root file system prevents applications from writing to their local disk. This can limit intrusions, as attackers will not be able to tamper with the file system or write foreign executables to disk.
+
+See https://avd.aquasec.com/misconfig/ksv-0014
+────────────────────────────────────────
+ helm/java-application/templates/deployment.yaml:29-38
+────────────────────────────────────────
+  29 ┌         - name: java-application
+  30 │           image: "865983312994.dkr.ecr.ap-southeast-2.amazonaws.com/java-application:1.16.0"
+  31 │           imagePullPolicy: IfNotPresent
+  32 │           env:
+  33 │           - name: APP_RUNTIME_VALUE
+  34 │             value: 
+  35 │           ports:
+  36 │             - name: http
+  37 │               containerPort: 80
+  38 └               protocol: TCP
+────────────────────────────────────────
+
+
+KSV-0118 (HIGH): container java-application in default namespace is using the default security context
+════════════════════════════════════════
+Security context controls the allocation of security parameters for the pod/container/volume, ensuring the appropriate level of protection. Relying on default security context may expose vulnerabilities to potential attacks that rely on privileged access.
+
+See https://avd.aquasec.com/misconfig/ksv-0118
+────────────────────────────────────────
+ helm/java-application/templates/deployment.yaml:29-38
+────────────────────────────────────────
+  29 ┌         - name: java-application
+  30 │           image: "865983312994.dkr.ecr.ap-southeast-2.amazonaws.com/java-application:1.16.0"
+  31 │           imagePullPolicy: IfNotPresent
+  32 │           env:
+  33 │           - name: APP_RUNTIME_VALUE
+  34 │             value: 
+  35 │           ports:
+  36 │             - name: http
+  37 │               containerPort: 80
+  38 └               protocol: TCP
+────────────────────────────────────────
+
+
+KSV-0118 (HIGH): deployment java-application in default namespace is using the default security context, which allows root privileges
+════════════════════════════════════════
+Security context controls the allocation of security parameters for the pod/container/volume, ensuring the appropriate level of protection. Relying on default security context may expose vulnerabilities to potential attacks that rely on privileged access.
+
+See https://avd.aquasec.com/misconfig/ksv-0118
+────────────────────────────────────────
+ helm/java-application/templates/deployment.yaml:26-38
+────────────────────────────────────────
+  26 ┌     spec:
+  27 │       serviceAccountName: java-application
+  28 │       containers:
+  29 │         - name: java-application
+  30 │           image: "865983312994.dkr.ecr.ap-southeast-2.amazonaws.com/java-application:1.16.0"
+  31 │           imagePullPolicy: IfNotPresent
+  32 │           env:
+  33 │           - name: APP_RUNTIME_VALUE
+  34 └             value: 
+  ..   
+────────────────────────────────────────
+
+
+
+helm_template.yaml (kubernetes)
+===============================
+Tests: 29 (SUCCESSES: 23, FAILURES: 6)
+Failures: 6 (HIGH: 6, CRITICAL: 0)
+
+KSV-0014 (HIGH): Container 'java-application' of Deployment 'java-application' should set 'securityContext.readOnlyRootFilesystem' to true
+════════════════════════════════════════
+An immutable root file system prevents applications from writing to their local disk. This can limit intrusions, as attackers will not be able to tamper with the file system or write foreign executables to disk.
+
+See https://avd.aquasec.com/misconfig/ksv-0014
+────────────────────────────────────────
+ helm_template.yaml:63-72
+────────────────────────────────────────
+  63 ┌       serviceAccountName: java-application
+  64 │       containers:
+  65 │         - name: java-application
+  66 │           image: "865983312994.dkr.ecr.ap-southeast-2.amazonaws.com/java-application:1.0.0.51"
+  67 │           imagePullPolicy: IfNotPresent
+  68 │           env:
+  69 │           - name: APP_RUNTIME_VALUE
+  70 │             value: development
+  71 │           ports:
+  72 └             - name: http
+────────────────────────────────────────
+
+
+KSV-0014 (HIGH): Container 'wget' of Pod 'java-application-test-connection' should set 'securityContext.readOnlyRootFilesystem' to true
+════════════════════════════════════════
+An immutable root file system prevents applications from writing to their local disk. This can limit intrusions, as attackers will not be able to tamper with the file system or write foreign executables to disk.
+
+See https://avd.aquasec.com/misconfig/ksv-0014
+────────────────────────────────────────
+ helm_template.yaml:88-91
+────────────────────────────────────────
+  88 ┌     "helm.sh/hook": test
+  89 │ spec:
+  90 │   containers:
+  91 └     - name: wget
+────────────────────────────────────────
+
+
+KSV-0118 (HIGH): container java-application in default namespace is using the default security context
+════════════════════════════════════════
+Security context controls the allocation of security parameters for the pod/container/volume, ensuring the appropriate level of protection. Relying on default security context may expose vulnerabilities to potential attacks that rely on privileged access.
+
+See https://avd.aquasec.com/misconfig/ksv-0118
+────────────────────────────────────────
+ helm_template.yaml:63-72
+────────────────────────────────────────
+  63 ┌       serviceAccountName: java-application
+  64 │       containers:
+  65 │         - name: java-application
+  66 │           image: "865983312994.dkr.ecr.ap-southeast-2.amazonaws.com/java-application:1.0.0.51"
+  67 │           imagePullPolicy: IfNotPresent
+  68 │           env:
+  69 │           - name: APP_RUNTIME_VALUE
+  70 │             value: development
+  71 │           ports:
+  72 └             - name: http
+────────────────────────────────────────
+
+
+KSV-0118 (HIGH): container java-application-test-connection in default namespace is using the default security context
+════════════════════════════════════════
+Security context controls the allocation of security parameters for the pod/container/volume, ensuring the appropriate level of protection. Relying on default security context may expose vulnerabilities to potential attacks that rely on privileged access.
+
+See https://avd.aquasec.com/misconfig/ksv-0118
+────────────────────────────────────────
+ helm_template.yaml:88-91
+────────────────────────────────────────
+  88 ┌     "helm.sh/hook": test
+  89 │ spec:
+  90 │   containers:
+  91 └     - name: wget
+────────────────────────────────────────
+
+
+KSV-0118 (HIGH): deployment java-application in default namespace is using the default security context, which allows root privileges
+════════════════════════════════════════
+Security context controls the allocation of security parameters for the pod/container/volume, ensuring the appropriate level of protection. Relying on default security context may expose vulnerabilities to potential attacks that rely on privileged access.
+
+See https://avd.aquasec.com/misconfig/ksv-0118
+────────────────────────────────────────
+ helm_template.yaml:60-72
+────────────────────────────────────────
+  60 ┌         app.kubernetes.io/version: "1.16.0"
+  61 │         app.kubernetes.io/managed-by: Helm
+  62 │     spec:
+  63 │       serviceAccountName: java-application
+  64 │       containers:
+  65 │         - name: java-application
+  66 │           image: "865983312994.dkr.ecr.ap-southeast-2.amazonaws.com/java-application:1.0.0.51"
+  67 │           imagePullPolicy: IfNotPresent
+  68 └           env:
+  ..   
+────────────────────────────────────────
+
+
+KSV-0118 (HIGH): pod java-application-test-connection in default namespace is using the default security context, which allows root privileges
+════════════════════════════════════════
+Security context controls the allocation of security parameters for the pod/container/volume, ensuring the appropriate level of protection. Relying on default security context may expose vulnerabilities to potential attacks that rely on privileged access.
+
+See https://avd.aquasec.com/misconfig/ksv-0118
+────────────────────────────────────────
+ helm_template.yaml:86-92
+────────────────────────────────────────
+  86 ┌     app.kubernetes.io/managed-by: Helm
+  87 │   annotations:
+  88 │     "helm.sh/hook": test
+  89 │ spec:
+  90 │   containers:
+  91 │     - name: wget
+  92 └       image: busybox
+────────────────────────────────────────
+
+

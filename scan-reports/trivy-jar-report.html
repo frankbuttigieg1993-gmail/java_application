@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style>
+      * {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      h1 {
+        text-align: center;
+      }
+      .group-header th {
+        font-size: 200%;
+      }
+      .sub-header th {
+        font-size: 150%;
+      }
+      table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        white-space: nowrap;
+        padding: .3em;
+      }
+      table {
+        margin: 0 auto;
+      }
+      .severity {
+        text-align: center;
+        font-weight: bold;
+        color: #fafafa;
+      }
+      .severity-LOW .severity { background-color: #5fbb31; }
+      .severity-MEDIUM .severity { background-color: #e9c600; }
+      .severity-HIGH .severity { background-color: #ff8800; }
+      .severity-CRITICAL .severity { background-color: #e40000; }
+      .severity-UNKNOWN .severity { background-color: #747474; }
+      .severity-LOW { background-color: #5fbb3160; }
+      .severity-MEDIUM { background-color: #e9c60060; }
+      .severity-HIGH { background-color: #ff880060; }
+      .severity-CRITICAL { background-color: #e4000060; }
+      .severity-UNKNOWN { background-color: #74747460; }
+      table tr td:first-of-type {
+        font-weight: bold;
+      }
+      .links a,
+      .links[data-more-links=on] a {
+        display: block;
+      }
+      .links[data-more-links=off] a:nth-of-type(1n+5) {
+        display: none;
+      }
+      a.toggle-more-links { cursor: pointer; }
+    </style>
+    <title>Java - Trivy Report - 2026-07-22 02:40:58.304537656 +0000 UTC m=+0.960545810 </title>
+    <script>
+      window.onload = function() {
+        document.querySelectorAll('td.links').forEach(function(linkCell) {
+          var links = [].concat.apply([], linkCell.querySelectorAll('a'));
+          [].sort.apply(links, function(a, b) {
+            return a.href > b.href ? 1 : -1;
+          });
+          links.forEach(function(link, idx) {
+            if (links.length > 3 && 3 === idx) {
+              var toggleLink = document.createElement('a');
+              toggleLink.innerText = "Toggle more links";
+              toggleLink.href = "#toggleMore";
+              toggleLink.setAttribute("class", "toggle-more-links");
+              linkCell.appendChild(toggleLink);
+            }
+            linkCell.appendChild(link);
+          });
+        });
+        document.querySelectorAll('a.toggle-more-links').forEach(function(toggleLink) {
+          toggleLink.onclick = function() {
+            var expanded = toggleLink.parentElement.getAttribute("data-more-links");
+            toggleLink.parentElement.setAttribute("data-more-links", "on" === expanded ? "off" : "on");
+            return false;
+          };
+        });
+      };
+    </script>
+  </head>
+  <body>
+    <h1>Java - Trivy Report - 2026-07-22 02:40:58.304556585 +0000 UTC m=+0.960564739</h1>
+    <table>
+      <tr class="group-header"><th colspan="6">jar</th></tr>
+      <tr class="sub-header">
+        <th>Package</th>
+        <th>Vulnerability ID</th>
+        <th>Severity</th>
+        <th>Installed Version</th>
+        <th>Fixed Version</th>
+        <th>Links</th>
+      </tr>
+      <tr class="severity-LOW">
+        <td class="pkg-name">ch.qos.logback:logback-core</td>
+        <td>CVE-2026-10532</td>
+        <td class="severity">LOW</td>
+        <td class="pkg-version">1.5.32</td>
+        <td>1.5.34</td>
+        <td class="links" data-more-links="off">
+          <a href="https://github.com/qos-ch/logback">https://github.com/qos-ch/logback</a>
+          <a href="https://github.com/qos-ch/logback/releases/tag/v_1.5.34">https://github.com/qos-ch/logback/releases/tag/v_1.5.34</a>
+          <a href="https://logback.qos.ch/news.html#1.5.34">https://logback.qos.ch/news.html#1.5.34</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-10532">https://nvd.nist.gov/vuln/detail/CVE-2026-10532</a>
+        </td>
+      </tr>
+      <tr class="severity-LOW">
+        <td class="pkg-name">ch.qos.logback:logback-core</td>
+        <td>CVE-2026-9828</td>
+        <td class="severity">LOW</td>
+        <td class="pkg-version">1.5.32</td>
+        <td>1.5.33</td>
+        <td class="links" data-more-links="off">
+          <a href="https://github.com/qos-ch/logback">https://github.com/qos-ch/logback</a>
+          <a href="https://logback.qos.ch/news.html#1.5.33">https://logback.qos.ch/news.html#1.5.33</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-9828">https://nvd.nist.gov/vuln/detail/CVE-2026-9828</a>
+        </td>
+      </tr>
+      <tr class="severity-HIGH">
+        <td class="pkg-name">com.fasterxml.jackson.core:jackson-core</td>
+        <td>GHSA-r7wm-3cxj-wff9</td>
+        <td class="severity">HIGH</td>
+        <td class="pkg-version">2.21.2</td>
+        <td>2.18.8, 2.21.4, 2.22.1</td>
+        <td class="links" data-more-links="off">
+          <a href="https://github.com/FasterXML/jackson-core">https://github.com/FasterXML/jackson-core</a>
+          <a href="https://github.com/FasterXML/jackson-core/commit/050b429804dce2a7e08f0be1b0b4c3d040fdb9cd">https://github.com/FasterXML/jackson-core/commit/050b429804dce2a7e08f0be1b0b4c3d040fdb9cd</a>
+          <a href="https://github.com/FasterXML/jackson-core/commit/4cdd529749da396cc7edf6d4a2aad41d47902641">https://github.com/FasterXML/jackson-core/commit/4cdd529749da396cc7edf6d4a2aad41d47902641</a>
+          <a href="https://github.com/FasterXML/jackson-core/commit/c5941e5aae7fd5aeac55d66933cfb82b9aabeef8">https://github.com/FasterXML/jackson-core/commit/c5941e5aae7fd5aeac55d66933cfb82b9aabeef8</a>
+          <a href="https://github.com/FasterXML/jackson-core/pull/1611">https://github.com/FasterXML/jackson-core/pull/1611</a>
+          <a href="https://github.com/FasterXML/jackson-core/security/advisories/GHSA-r7wm-3cxj-wff9">https://github.com/FasterXML/jackson-core/security/advisories/GHSA-r7wm-3cxj-wff9</a>
+        </td>
+      </tr>
+      <tr class="severity-HIGH">
+        <td class="pkg-name">com.fasterxml.jackson.core:jackson-databind</td>
+        <td>CVE-2026-54512</td>
+        <td class="severity">HIGH</td>
+        <td class="pkg-version">2.21.2</td>
+        <td>2.18.8, 3.1.4, 2.21.4</td>
+        <td class="links" data-more-links="off">
+          <a href="https://access.redhat.com/errata/RHSA-2026:40895">https://access.redhat.com/errata/RHSA-2026:40895</a>
+          <a href="https://access.redhat.com/security/cve/CVE-2026-54512">https://access.redhat.com/security/cve/CVE-2026-54512</a>
+          <a href="https://bugzilla.redhat.com/2492010">https://bugzilla.redhat.com/2492010</a>
+          <a href="https://bugzilla.redhat.com/2492015">https://bugzilla.redhat.com/2492015</a>
+          <a href="https://errata.almalinux.org/9/ALSA-2026-40895.html">https://errata.almalinux.org/9/ALSA-2026-40895.html</a>
+          <a href="https://github.com/FasterXML/jackson-databind">https://github.com/FasterXML/jackson-databind</a>
+          <a href="https://github.com/FasterXML/jackson-databind/commit/434d6c511de7fdd9872f29157aafb6162d12d8d5">https://github.com/FasterXML/jackson-databind/commit/434d6c511de7fdd9872f29157aafb6162d12d8d5</a>
+          <a href="https://github.com/FasterXML/jackson-databind/issues/5988">https://github.com/FasterXML/jackson-databind/issues/5988</a>
+          <a href="https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-j3rv-43j4-c7qm">https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-j3rv-43j4-c7qm</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-54512">https://nvd.nist.gov/vuln/detail/CVE-2026-54512</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2026-54512">https://www.cve.org/CVERecord?id=CVE-2026-54512</a>
+        </td>
+      </tr>
+      <tr class="severity-HIGH">
+        <td class="pkg-name">com.fasterxml.jackson.core:jackson-databind</td>
+        <td>CVE-2026-54513</td>
+        <td class="severity">HIGH</td>
+        <td class="pkg-version">2.21.2</td>
+        <td>2.18.8, 2.21.4, 3.1.4</td>
+        <td class="links" data-more-links="off">
+          <a href="https://access.redhat.com/errata/RHSA-2026:36839">https://access.redhat.com/errata/RHSA-2026:36839</a>
+          <a href="https://access.redhat.com/errata/RHSA-2026:40895">https://access.redhat.com/errata/RHSA-2026:40895</a>
+          <a href="https://access.redhat.com/errata/RHSA-2026:41951">https://access.redhat.com/errata/RHSA-2026:41951</a>
+          <a href="https://access.redhat.com/security/cve/CVE-2026-54513">https://access.redhat.com/security/cve/CVE-2026-54513</a>
+          <a href="https://bugzilla.redhat.com/2492010">https://bugzilla.redhat.com/2492010</a>
+          <a href="https://bugzilla.redhat.com/2492015">https://bugzilla.redhat.com/2492015</a>
+          <a href="https://bugzilla.redhat.com/show_bug.cgi?id=2492010">https://bugzilla.redhat.com/show_bug.cgi?id=2492010</a>
+          <a href="https://errata.almalinux.org/9/ALSA-2026-40895.html">https://errata.almalinux.org/9/ALSA-2026-40895.html</a>
+          <a href="https://github.com/FasterXML/jackson-databind">https://github.com/FasterXML/jackson-databind</a>
+          <a href="https://github.com/FasterXML/jackson-databind/commit/01d1692c8d0ed03e51a0e3c4f8a9e6908e4931e5">https://github.com/FasterXML/jackson-databind/commit/01d1692c8d0ed03e51a0e3c4f8a9e6908e4931e5</a>
+          <a href="https://github.com/FasterXML/jackson-databind/commit/24529da29fdf46ff94ca38de9ebf31cd188f5e8e">https://github.com/FasterXML/jackson-databind/commit/24529da29fdf46ff94ca38de9ebf31cd188f5e8e</a>
+          <a href="https://github.com/FasterXML/jackson-databind/issues/5981">https://github.com/FasterXML/jackson-databind/issues/5981</a>
+          <a href="https://github.com/FasterXML/jackson-databind/issues/5983">https://github.com/FasterXML/jackson-databind/issues/5983</a>
+          <a href="https://github.com/FasterXML/jackson-databind/pull/5984">https://github.com/FasterXML/jackson-databind/pull/5984</a>
+          <a href="https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-rmj7-2vxq-3g9f">https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-rmj7-2vxq-3g9f</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-54513">https://nvd.nist.gov/vuln/detail/CVE-2026-54513</a>
+          <a href="https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-54513.json">https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-54513.json</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2026-54513">https://www.cve.org/CVERecord?id=CVE-2026-54513</a>
+        </td>
+      </tr>
+      <tr class="severity-MEDIUM">
+        <td class="pkg-name">com.fasterxml.jackson.core:jackson-databind</td>
+        <td>CVE-2026-54514</td>
+        <td class="severity">MEDIUM</td>
+        <td class="pkg-version">2.21.2</td>
+        <td>2.18.8, 2.21.4, 3.1.4</td>
+        <td class="links" data-more-links="off">
+          <a href="https://access.redhat.com/security/cve/CVE-2026-54514">https://access.redhat.com/security/cve/CVE-2026-54514</a>
+          <a href="https://github.com/FasterXML/jackson-databind">https://github.com/FasterXML/jackson-databind</a>
+          <a href="https://github.com/FasterXML/jackson-databind/commit/1f5a1037b1e9e05920e755cb35f198bcd46667e4">https://github.com/FasterXML/jackson-databind/commit/1f5a1037b1e9e05920e755cb35f198bcd46667e4</a>
+          <a href="https://github.com/FasterXML/jackson-databind/pull/5951">https://github.com/FasterXML/jackson-databind/pull/5951</a>
+          <a href="https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-hgj6-7826-r7m5">https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-hgj6-7826-r7m5</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-54514">https://nvd.nist.gov/vuln/detail/CVE-2026-54514</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2026-54514">https://www.cve.org/CVERecord?id=CVE-2026-54514</a>
+        </td>
+      </tr>
+      <tr class="severity-MEDIUM">
+        <td class="pkg-name">com.fasterxml.jackson.core:jackson-databind</td>
+        <td>CVE-2026-54515</td>
+        <td class="severity">MEDIUM</td>
+        <td class="pkg-version">2.21.2</td>
+        <td>3.1.4, 2.18.9, 2.21.5, 2.22.1</td>
+        <td class="links" data-more-links="off">
+          <a href="https://access.redhat.com/security/cve/CVE-2026-54515">https://access.redhat.com/security/cve/CVE-2026-54515</a>
+          <a href="https://github.com/FasterXML/jackson-databind">https://github.com/FasterXML/jackson-databind</a>
+          <a href="https://github.com/FasterXML/jackson-databind/commit/0e1b0b211f7a53baa62ba2f4c9bd006c7bf4d5fa">https://github.com/FasterXML/jackson-databind/commit/0e1b0b211f7a53baa62ba2f4c9bd006c7bf4d5fa</a>
+          <a href="https://github.com/FasterXML/jackson-databind/issues/5962">https://github.com/FasterXML/jackson-databind/issues/5962</a>
+          <a href="https://github.com/FasterXML/jackson-databind/issues/5964">https://github.com/FasterXML/jackson-databind/issues/5964</a>
+          <a href="https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-5jmj-h7xm-6q6v">https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-5jmj-h7xm-6q6v</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-54515">https://nvd.nist.gov/vuln/detail/CVE-2026-54515</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2026-54515">https://www.cve.org/CVERecord?id=CVE-2026-54515</a>
+        </td>
+      </tr>
+      <tr class="severity-MEDIUM">
+        <td class="pkg-name">com.fasterxml.jackson.core:jackson-databind</td>
+        <td>CVE-2026-54516</td>
+        <td class="severity">MEDIUM</td>
+        <td class="pkg-version">2.21.2</td>
+        <td>2.21.4, 3.1.4</td>
+        <td class="links" data-more-links="off">
+          <a href="https://access.redhat.com/security/cve/CVE-2026-54516">https://access.redhat.com/security/cve/CVE-2026-54516</a>
+          <a href="https://github.com/FasterXML/jackson-databind">https://github.com/FasterXML/jackson-databind</a>
+          <a href="https://github.com/FasterXML/jackson-databind/commit/c3d56dd25d52319828147c5b9aeabf2d485c250a">https://github.com/FasterXML/jackson-databind/commit/c3d56dd25d52319828147c5b9aeabf2d485c250a</a>
+          <a href="https://github.com/FasterXML/jackson-databind/commit/e88cb17006b6af4883b973058f0bb6486e5074af">https://github.com/FasterXML/jackson-databind/commit/e88cb17006b6af4883b973058f0bb6486e5074af</a>
+          <a href="https://github.com/FasterXML/jackson-databind/pull/5967">https://github.com/FasterXML/jackson-databind/pull/5967</a>
+          <a href="https://github.com/FasterXML/jackson-databind/pull/5968">https://github.com/FasterXML/jackson-databind/pull/5968</a>
+          <a href="https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-9fxm-vc8v-hj55">https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-9fxm-vc8v-hj55</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-54516">https://nvd.nist.gov/vuln/detail/CVE-2026-54516</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2026-54516">https://www.cve.org/CVERecord?id=CVE-2026-54516</a>
+        </td>
+      </tr>
+      <tr class="severity-MEDIUM">
+        <td class="pkg-name">com.fasterxml.jackson.core:jackson-databind</td>
+        <td>CVE-2026-54517</td>
+        <td class="severity">MEDIUM</td>
+        <td class="pkg-version">2.21.2</td>
+        <td>2.21.4, 3.1.4</td>
+        <td class="links" data-more-links="off">
+          <a href="https://access.redhat.com/security/cve/CVE-2026-54517">https://access.redhat.com/security/cve/CVE-2026-54517</a>
+          <a href="https://github.com/FasterXML/jackson-databind">https://github.com/FasterXML/jackson-databind</a>
+          <a href="https://github.com/FasterXML/jackson-databind/commit/5bf23edb4221f7dd2ec8e71ff6d26c61640f261d">https://github.com/FasterXML/jackson-databind/commit/5bf23edb4221f7dd2ec8e71ff6d26c61640f261d</a>
+          <a href="https://github.com/FasterXML/jackson-databind/commit/94c5d215b3af1505098c686405d9641f041a9962">https://github.com/FasterXML/jackson-databind/commit/94c5d215b3af1505098c686405d9641f041a9962</a>
+          <a href="https://github.com/FasterXML/jackson-databind/pull/5969">https://github.com/FasterXML/jackson-databind/pull/5969</a>
+          <a href="https://github.com/FasterXML/jackson-databind/pull/5970">https://github.com/FasterXML/jackson-databind/pull/5970</a>
+          <a href="https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-5hh8-q8hv-fr38">https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-5hh8-q8hv-fr38</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-54517">https://nvd.nist.gov/vuln/detail/CVE-2026-54517</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2026-54517">https://www.cve.org/CVERecord?id=CVE-2026-54517</a>
+        </td>
+      </tr>
+      <tr class="severity-MEDIUM">
+        <td class="pkg-name">com.fasterxml.jackson.core:jackson-databind</td>
+        <td>CVE-2026-54518</td>
+        <td class="severity">MEDIUM</td>
+        <td class="pkg-version">2.21.2</td>
+        <td>2.21.4</td>
+        <td class="links" data-more-links="off">
+          <a href="https://access.redhat.com/security/cve/CVE-2026-54518">https://access.redhat.com/security/cve/CVE-2026-54518</a>
+          <a href="https://github.com/FasterXML/jackson-databind">https://github.com/FasterXML/jackson-databind</a>
+          <a href="https://github.com/FasterXML/jackson-databind/commit/721fa07ebbd4aab4a659a1a68940878315c3e341">https://github.com/FasterXML/jackson-databind/commit/721fa07ebbd4aab4a659a1a68940878315c3e341</a>
+          <a href="https://github.com/FasterXML/jackson-databind/commit/d633bc038f200c1397c07f1a2b46f58e72c91eea">https://github.com/FasterXML/jackson-databind/commit/d633bc038f200c1397c07f1a2b46f58e72c91eea</a>
+          <a href="https://github.com/FasterXML/jackson-databind/pull/5971">https://github.com/FasterXML/jackson-databind/pull/5971</a>
+          <a href="https://github.com/FasterXML/jackson-databind/pull/5973">https://github.com/FasterXML/jackson-databind/pull/5973</a>
+          <a href="https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-rcqc-6cw3-h962">https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-rcqc-6cw3-h962</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-54518">https://nvd.nist.gov/vuln/detail/CVE-2026-54518</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2026-54518">https://www.cve.org/CVERecord?id=CVE-2026-54518</a>
+        </td>
+      </tr>
+      <tr class="severity-MEDIUM">
+        <td class="pkg-name">com.fasterxml.jackson.core:jackson-databind</td>
+        <td>CVE-2026-59888</td>
+        <td class="severity">MEDIUM</td>
+        <td class="pkg-version">2.21.2</td>
+        <td>2.18.8, 2.21.4</td>
+        <td class="links" data-more-links="off">
+          <a href="https://github.com/FasterXML/jackson-databind">https://github.com/FasterXML/jackson-databind</a>
+          <a href="https://github.com/FasterXML/jackson-databind/commit/baa2cdf5ca2b2717fbb88d91955d69d8651df3e4">https://github.com/FasterXML/jackson-databind/commit/baa2cdf5ca2b2717fbb88d91955d69d8651df3e4</a>
+          <a href="https://github.com/FasterXML/jackson-databind/commit/c7c678360624da5bc7eed2152789fa522880db9d">https://github.com/FasterXML/jackson-databind/commit/c7c678360624da5bc7eed2152789fa522880db9d</a>
+          <a href="https://github.com/FasterXML/jackson-databind/pull/5974">https://github.com/FasterXML/jackson-databind/pull/5974</a>
+          <a href="https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-3pjw-73gf-8qr5">https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-3pjw-73gf-8qr5</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-59888">https://nvd.nist.gov/vuln/detail/CVE-2026-59888</a>
+        </td>
+      </tr>
+      <tr class="severity-MEDIUM">
+        <td class="pkg-name">com.fasterxml.jackson.core:jackson-databind</td>
+        <td>CVE-2026-59889</td>
+        <td class="severity">MEDIUM</td>
+        <td class="pkg-version">2.21.2</td>
+        <td>2.21.5, 2.18.9, 2.22.1</td>
+        <td class="links" data-more-links="off">
+          <a href="https://github.com/FasterXML/jackson-databind">https://github.com/FasterXML/jackson-databind</a>
+          <a href="https://github.com/FasterXML/jackson-databind/commit/d627a8a86fcb062429282f79f3f256f181ed2c7b">https://github.com/FasterXML/jackson-databind/commit/d627a8a86fcb062429282f79f3f256f181ed2c7b</a>
+          <a href="https://github.com/FasterXML/jackson-databind/issues/6060">https://github.com/FasterXML/jackson-databind/issues/6060</a>
+          <a href="https://github.com/FasterXML/jackson-databind/pull/6056">https://github.com/FasterXML/jackson-databind/pull/6056</a>
+          <a href="https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-5gvw-p9qm-jgwh">https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-5gvw-p9qm-jgwh</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-59889">https://nvd.nist.gov/vuln/detail/CVE-2026-59889</a>
+        </td>
+      </tr>
+      <tr class="severity-MEDIUM">
+        <td class="pkg-name">com.fasterxml.jackson.core:jackson-databind</td>
+        <td>GHSA-mhm7-754m-9p8w</td>
+        <td class="severity">MEDIUM</td>
+        <td class="pkg-version">2.21.2</td>
+        <td>2.18.9, 2.21.5</td>
+        <td class="links" data-more-links="off">
+          <a href="https://github.com/FasterXML/jackson-databind">https://github.com/FasterXML/jackson-databind</a>
+          <a href="https://github.com/FasterXML/jackson-databind/commit/c628b357ed143d8492756d5c1458cfb9fbeb29ed">https://github.com/FasterXML/jackson-databind/commit/c628b357ed143d8492756d5c1458cfb9fbeb29ed</a>
+          <a href="https://github.com/FasterXML/jackson-databind/commit/dea7eb466e98cc226c4ac65587581fb49926820c">https://github.com/FasterXML/jackson-databind/commit/dea7eb466e98cc226c4ac65587581fb49926820c</a>
+          <a href="https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-mhm7-754m-9p8w">https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-mhm7-754m-9p8w</a>
+        </td>
+      </tr>
+      <tr class="severity-CRITICAL">
+        <td class="pkg-name">org.apache.tomcat.embed:tomcat-embed-core</td>
+        <td>CVE-2026-41293</td>
+        <td class="severity">CRITICAL</td>
+        <td class="pkg-version">10.1.54</td>
+        <td>9.0.118, 10.1.55, 11.0.22</td>
+        <td class="links" data-more-links="off">
+          <a href="http://www.openwall.com/lists/oss-security/2026/05/12/13">http://www.openwall.com/lists/oss-security/2026/05/12/13</a>
+          <a href="https://access.redhat.com/security/cve/CVE-2026-41293">https://access.redhat.com/security/cve/CVE-2026-41293</a>
+          <a href="https://github.com/apache/tomcat">https://github.com/apache/tomcat</a>
+          <a href="https://github.com/apache/tomcat/commit/19f17a257797e8d139b33ff9c88d362a273be148">https://github.com/apache/tomcat/commit/19f17a257797e8d139b33ff9c88d362a273be148</a>
+          <a href="https://github.com/apache/tomcat/commit/1c70480466572c9192ed412ebefcd43fc63137fd">https://github.com/apache/tomcat/commit/1c70480466572c9192ed412ebefcd43fc63137fd</a>
+          <a href="https://github.com/apache/tomcat/commit/2a2476460e823789f530a22207873ea8cd6eff3b">https://github.com/apache/tomcat/commit/2a2476460e823789f530a22207873ea8cd6eff3b</a>
+          <a href="https://github.com/apache/tomcat/commit/3915fd27e6810b14ccd21e3d900bd8faef44d3df">https://github.com/apache/tomcat/commit/3915fd27e6810b14ccd21e3d900bd8faef44d3df</a>
+          <a href="https://github.com/apache/tomcat/commit/57c2b3bfd62792631e1df24cf4237b990a0b36fa">https://github.com/apache/tomcat/commit/57c2b3bfd62792631e1df24cf4237b990a0b36fa</a>
+          <a href="https://github.com/apache/tomcat/commit/c2925554c677da57390f940d856871e18daaacab">https://github.com/apache/tomcat/commit/c2925554c677da57390f940d856871e18daaacab</a>
+          <a href="https://github.com/apache/tomcat/commit/cf9452443bcbf3b1a4b435ef7d624364f1b65ca3">https://github.com/apache/tomcat/commit/cf9452443bcbf3b1a4b435ef7d624364f1b65ca3</a>
+          <a href="https://github.com/apache/tomcat/commit/e5cef9618c3f4fd31bd6fb1e83f0f18022280dac">https://github.com/apache/tomcat/commit/e5cef9618c3f4fd31bd6fb1e83f0f18022280dac</a>
+          <a href="https://github.com/apache/tomcat/commit/f72a6174ab1f0f5a053435f80448b4f6837fe6d7">https://github.com/apache/tomcat/commit/f72a6174ab1f0f5a053435f80448b4f6837fe6d7</a>
+          <a href="https://lists.apache.org/thread/qwg0q16z7xkb2qrr853wdll5531mvl1r">https://lists.apache.org/thread/qwg0q16z7xkb2qrr853wdll5531mvl1r</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-41293">https://nvd.nist.gov/vuln/detail/CVE-2026-41293</a>
+          <a href="https://tomcat.apache.org/security-10.html">https://tomcat.apache.org/security-10.html</a>
+          <a href="https://tomcat.apache.org/security-11.html">https://tomcat.apache.org/security-11.html</a>
+          <a href="https://tomcat.apache.org/security-9.html">https://tomcat.apache.org/security-9.html</a>
+          <a href="https://ubuntu.com/security/notices/USN-8417-1">https://ubuntu.com/security/notices/USN-8417-1</a>
+          <a href="https://ubuntu.com/security/notices/USN-8450-1">https://ubuntu.com/security/notices/USN-8450-1</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2026-41293">https://www.cve.org/CVERecord?id=CVE-2026-41293</a>
+        </td>
+      </tr>
+      <tr class="severity-CRITICAL">
+        <td class="pkg-name">org.apache.tomcat.embed:tomcat-embed-core</td>
+        <td>CVE-2026-43512</td>
+        <td class="severity">CRITICAL</td>
+        <td class="pkg-version">10.1.54</td>
+        <td>9.0.118, 10.1.55, 11.0.22</td>
+        <td class="links" data-more-links="off">
+          <a href="http://www.openwall.com/lists/oss-security/2026/05/12/8">http://www.openwall.com/lists/oss-security/2026/05/12/8</a>
+          <a href="https://access.redhat.com/security/cve/CVE-2026-43512">https://access.redhat.com/security/cve/CVE-2026-43512</a>
+          <a href="https://github.com/apache/tomcat/commit/3d4d3fae07a6cd9c2eb193c5491001740ec64448">https://github.com/apache/tomcat/commit/3d4d3fae07a6cd9c2eb193c5491001740ec64448</a>
+          <a href="https://github.com/apache/tomcat/commit/6565a6cb6499e56fe2f34457cec99f9d1c4f39e9">https://github.com/apache/tomcat/commit/6565a6cb6499e56fe2f34457cec99f9d1c4f39e9</a>
+          <a href="https://github.com/apache/tomcat/commit/a99c355e8199adbfd67c9a1fffbd85b810b196cd">https://github.com/apache/tomcat/commit/a99c355e8199adbfd67c9a1fffbd85b810b196cd</a>
+          <a href="https://lists.apache.org/thread/7x09x7o12solvclslw3sz0288xc8wx73">https://lists.apache.org/thread/7x09x7o12solvclslw3sz0288xc8wx73</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-43512">https://nvd.nist.gov/vuln/detail/CVE-2026-43512</a>
+          <a href="https://tomcat.apache.org/security-10.html">https://tomcat.apache.org/security-10.html</a>
+          <a href="https://tomcat.apache.org/security-11.html">https://tomcat.apache.org/security-11.html</a>
+          <a href="https://tomcat.apache.org/security-9.html">https://tomcat.apache.org/security-9.html</a>
+          <a href="https://ubuntu.com/security/notices/USN-8383-1">https://ubuntu.com/security/notices/USN-8383-1</a>
+          <a href="https://ubuntu.com/security/notices/USN-8417-1">https://ubuntu.com/security/notices/USN-8417-1</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2026-43512">https://www.cve.org/CVERecord?id=CVE-2026-43512</a>
+        </td>
+      </tr>
+      <tr class="severity-CRITICAL">
+        <td class="pkg-name">org.apache.tomcat.embed:tomcat-embed-core</td>
+        <td>CVE-2026-43515</td>
+        <td class="severity">CRITICAL</td>
+        <td class="pkg-version">10.1.54</td>
+        <td>9.0.118, 10.1.55, 11.0.22</td>
+        <td class="links" data-more-links="off">
+          <a href="http://www.openwall.com/lists/oss-security/2026/05/12/11">http://www.openwall.com/lists/oss-security/2026/05/12/11</a>
+          <a href="https://access.redhat.com/security/cve/CVE-2026-43515">https://access.redhat.com/security/cve/CVE-2026-43515</a>
+          <a href="https://github.com/apache/tomcat">https://github.com/apache/tomcat</a>
+          <a href="https://github.com/apache/tomcat/commit/276087d9c7abbcecc6c4fb4e4b08cf64780c6e36">https://github.com/apache/tomcat/commit/276087d9c7abbcecc6c4fb4e4b08cf64780c6e36</a>
+          <a href="https://github.com/apache/tomcat/commit/c621317382682206fb58ab92ebd3e1b6fdd10ce9">https://github.com/apache/tomcat/commit/c621317382682206fb58ab92ebd3e1b6fdd10ce9</a>
+          <a href="https://github.com/apache/tomcat/commit/db919ff9912b4d61d1b702a1342b8bde39270031">https://github.com/apache/tomcat/commit/db919ff9912b4d61d1b702a1342b8bde39270031</a>
+          <a href="https://lists.apache.org/thread/746nxfxod0wsocxtmv8pb8nkgmwpc6bb">https://lists.apache.org/thread/746nxfxod0wsocxtmv8pb8nkgmwpc6bb</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-43515">https://nvd.nist.gov/vuln/detail/CVE-2026-43515</a>
+          <a href="https://tomcat.apache.org/security-10.html">https://tomcat.apache.org/security-10.html</a>
+          <a href="https://tomcat.apache.org/security-11.html">https://tomcat.apache.org/security-11.html</a>
+          <a href="https://tomcat.apache.org/security-9.html">https://tomcat.apache.org/security-9.html</a>
+          <a href="https://ubuntu.com/security/notices/USN-8383-1">https://ubuntu.com/security/notices/USN-8383-1</a>
+          <a href="https://ubuntu.com/security/notices/USN-8417-1">https://ubuntu.com/security/notices/USN-8417-1</a>
+          <a href="https://ubuntu.com/security/notices/USN-8450-1">https://ubuntu.com/security/notices/USN-8450-1</a>
+          <a href="https://ubuntu.com/security/notices/USN-8551-1">https://ubuntu.com/security/notices/USN-8551-1</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2026-43515">https://www.cve.org/CVERecord?id=CVE-2026-43515</a>
+        </td>
+      </tr>
+      <tr class="severity-HIGH">
+        <td class="pkg-name">org.apache.tomcat.embed:tomcat-embed-core</td>
+        <td>CVE-2026-41284</td>
+        <td class="severity">HIGH</td>
+        <td class="pkg-version">10.1.54</td>
+        <td>9.0.118, 10.1.55, 11.0.22</td>
+        <td class="links" data-more-links="off">
+          <a href="http://www.openwall.com/lists/oss-security/2026/05/12/12">http://www.openwall.com/lists/oss-security/2026/05/12/12</a>
+          <a href="https://access.redhat.com/security/cve/CVE-2026-41284">https://access.redhat.com/security/cve/CVE-2026-41284</a>
+          <a href="https://github.com/apache/tomcat">https://github.com/apache/tomcat</a>
+          <a href="https://github.com/apache/tomcat/commit/17dacd9aa48628da2eba37a9ab743c0b6c71685c">https://github.com/apache/tomcat/commit/17dacd9aa48628da2eba37a9ab743c0b6c71685c</a>
+          <a href="https://github.com/apache/tomcat/commit/a96fffd18487a29c0a30d36f00cb2b2d91f6d42c">https://github.com/apache/tomcat/commit/a96fffd18487a29c0a30d36f00cb2b2d91f6d42c</a>
+          <a href="https://github.com/apache/tomcat/commit/b3d1c1c239142e806be0b7329d304b94a58913ed">https://github.com/apache/tomcat/commit/b3d1c1c239142e806be0b7329d304b94a58913ed</a>
+          <a href="https://lists.apache.org/thread/2nvqjr7ovjmvx2vbhb7s61ycd5msc8qc">https://lists.apache.org/thread/2nvqjr7ovjmvx2vbhb7s61ycd5msc8qc</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-41284">https://nvd.nist.gov/vuln/detail/CVE-2026-41284</a>
+          <a href="https://tomcat.apache.org/security-10.html">https://tomcat.apache.org/security-10.html</a>
+          <a href="https://tomcat.apache.org/security-11.html">https://tomcat.apache.org/security-11.html</a>
+          <a href="https://tomcat.apache.org/security-9.html">https://tomcat.apache.org/security-9.html</a>
+          <a href="https://ubuntu.com/security/notices/USN-8417-1">https://ubuntu.com/security/notices/USN-8417-1</a>
+          <a href="https://ubuntu.com/security/notices/USN-8450-1">https://ubuntu.com/security/notices/USN-8450-1</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2026-41284">https://www.cve.org/CVERecord?id=CVE-2026-41284</a>
+        </td>
+      </tr>
+      <tr class="severity-HIGH">
+        <td class="pkg-name">org.apache.tomcat.embed:tomcat-embed-core</td>
+        <td>CVE-2026-42498</td>
+        <td class="severity">HIGH</td>
+        <td class="pkg-version">10.1.54</td>
+        <td>9.0.118, 10.1.55, 11.0.22</td>
+        <td class="links" data-more-links="off">
+          <a href="http://www.openwall.com/lists/oss-security/2026/05/12/14">http://www.openwall.com/lists/oss-security/2026/05/12/14</a>
+          <a href="https://access.redhat.com/security/cve/CVE-2026-42498">https://access.redhat.com/security/cve/CVE-2026-42498</a>
+          <a href="https://github.com/apache/tomcat">https://github.com/apache/tomcat</a>
+          <a href="https://github.com/apache/tomcat/commit/169d725788ea6aec217ecac70fe4161c837ba423">https://github.com/apache/tomcat/commit/169d725788ea6aec217ecac70fe4161c837ba423</a>
+          <a href="https://github.com/apache/tomcat/commit/6cbe274592ef2d11607b5b188e1df649de52f8d5">https://github.com/apache/tomcat/commit/6cbe274592ef2d11607b5b188e1df649de52f8d5</a>
+          <a href="https://github.com/apache/tomcat/commit/b7b173694d588ddcfa432f079baf763cbbbaa5c4">https://github.com/apache/tomcat/commit/b7b173694d588ddcfa432f079baf763cbbbaa5c4</a>
+          <a href="https://lists.apache.org/thread/n61zwf75jrv09rz90j4jssncm244bwdb">https://lists.apache.org/thread/n61zwf75jrv09rz90j4jssncm244bwdb</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-42498">https://nvd.nist.gov/vuln/detail/CVE-2026-42498</a>
+          <a href="https://tomcat.apache.org/security-10.html">https://tomcat.apache.org/security-10.html</a>
+          <a href="https://tomcat.apache.org/security-11.html">https://tomcat.apache.org/security-11.html</a>
+          <a href="https://tomcat.apache.org/security-9.html">https://tomcat.apache.org/security-9.html</a>
+          <a href="https://ubuntu.com/security/notices/USN-8417-1">https://ubuntu.com/security/notices/USN-8417-1</a>
+          <a href="https://ubuntu.com/security/notices/USN-8450-1">https://ubuntu.com/security/notices/USN-8450-1</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2026-42498">https://www.cve.org/CVERecord?id=CVE-2026-42498</a>
+        </td>
+      </tr>
+      <tr class="severity-HIGH">
+        <td class="pkg-name">org.apache.tomcat.embed:tomcat-embed-core</td>
+        <td>CVE-2026-43513</td>
+        <td class="severity">HIGH</td>
+        <td class="pkg-version">10.1.54</td>
+        <td>9.0.118, 10.1.55, 11.0.22</td>
+        <td class="links" data-more-links="off">
+          <a href="http://www.openwall.com/lists/oss-security/2026/05/12/9">http://www.openwall.com/lists/oss-security/2026/05/12/9</a>
+          <a href="https://access.redhat.com/security/cve/CVE-2026-43513">https://access.redhat.com/security/cve/CVE-2026-43513</a>
+          <a href="https://github.com/apache/tomcat">https://github.com/apache/tomcat</a>
+          <a href="https://github.com/apache/tomcat/commit/4a90d3fa93988c447cd5bb7482f76ff70d7f15c2">https://github.com/apache/tomcat/commit/4a90d3fa93988c447cd5bb7482f76ff70d7f15c2</a>
+          <a href="https://github.com/apache/tomcat/commit/6dd75beb55bd42fc5f78e929596b25018cd17717">https://github.com/apache/tomcat/commit/6dd75beb55bd42fc5f78e929596b25018cd17717</a>
+          <a href="https://github.com/apache/tomcat/commit/83f3e51df7b87f5f6e626951c575ded1a512e8ef">https://github.com/apache/tomcat/commit/83f3e51df7b87f5f6e626951c575ded1a512e8ef</a>
+          <a href="https://lists.apache.org/thread/ytjcgldshj73lcnd1sh95od5hrghwogp">https://lists.apache.org/thread/ytjcgldshj73lcnd1sh95od5hrghwogp</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-43513">https://nvd.nist.gov/vuln/detail/CVE-2026-43513</a>
+          <a href="https://tomcat.apache.org/security-10.html">https://tomcat.apache.org/security-10.html</a>
+          <a href="https://tomcat.apache.org/security-11.html">https://tomcat.apache.org/security-11.html</a>
+          <a href="https://tomcat.apache.org/security-9.html">https://tomcat.apache.org/security-9.html</a>
+          <a href="https://ubuntu.com/security/notices/USN-8383-1">https://ubuntu.com/security/notices/USN-8383-1</a>
+          <a href="https://ubuntu.com/security/notices/USN-8417-1">https://ubuntu.com/security/notices/USN-8417-1</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2026-43513">https://www.cve.org/CVERecord?id=CVE-2026-43513</a>
+        </td>
+      </tr>
+      <tr class="severity-LOW">
+        <td class="pkg-name">org.apache.tomcat.embed:tomcat-embed-core</td>
+        <td>CVE-2026-43514</td>
+        <td class="severity">LOW</td>
+        <td class="pkg-version">10.1.54</td>
+        <td>9.0.118, 10.1.55, 11.0.22</td>
+        <td class="links" data-more-links="off">
+          <a href="http://www.openwall.com/lists/oss-security/2026/05/12/10">http://www.openwall.com/lists/oss-security/2026/05/12/10</a>
+          <a href="https://access.redhat.com/security/cve/CVE-2026-43514">https://access.redhat.com/security/cve/CVE-2026-43514</a>
+          <a href="https://github.com/apache/tomcat">https://github.com/apache/tomcat</a>
+          <a href="https://github.com/apache/tomcat/commit/933dcdbf2515972280002929e7e597dead2e9ffa">https://github.com/apache/tomcat/commit/933dcdbf2515972280002929e7e597dead2e9ffa</a>
+          <a href="https://github.com/apache/tomcat/commit/a102a2a157868ca51d83eaf5a119ccd9976a113e">https://github.com/apache/tomcat/commit/a102a2a157868ca51d83eaf5a119ccd9976a113e</a>
+          <a href="https://github.com/apache/tomcat/commit/d35d9d23263c8e4af561f615c960c91697ff200e">https://github.com/apache/tomcat/commit/d35d9d23263c8e4af561f615c960c91697ff200e</a>
+          <a href="https://lists.apache.org/thread/2k654v5cq123npfsd1b2kk1y30owqb1m">https://lists.apache.org/thread/2k654v5cq123npfsd1b2kk1y30owqb1m</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2026-43514">https://nvd.nist.gov/vuln/detail/CVE-2026-43514</a>
+          <a href="https://tomcat.apache.org/security-10.html">https://tomcat.apache.org/security-10.html</a>
+          <a href="https://tomcat.apache.org/security-11.html">https://tomcat.apache.org/security-11.html</a>
+          <a href="https://tomcat.apache.org/security-9.html">https://tomcat.apache.org/security-9.html</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2026-43514">https://www.cve.org/CVERecord?id=CVE-2026-43514</a>
+        </td>
+      </tr>
+      <tr><th colspan="6">No Misconfigurations found</th></tr>
+    </table>
+  </body>
+</html>

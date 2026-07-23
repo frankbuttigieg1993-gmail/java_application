@@ -6,6 +6,7 @@ plugins {
     id 'org.springframework.boot' version '3.5.14'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'jacoco'
+    id 'project-report' 
     id 'org.cyclonedx.bom' version '3.3.0'
     id "org.owasp.dependencycheck" version "12.1.8"
 }
@@ -51,6 +52,8 @@ tasks.jacocoTestReport {
 
 dependencyCheck {
     format = "HTML"
+    // Force scanning of all transitive dependencies across configuration scopes
+    skipTestGroups = false 
     nvd {
         if (project.hasProperty('nvdApiKey')) {
             apiKey = project.property('nvdApiKey')
