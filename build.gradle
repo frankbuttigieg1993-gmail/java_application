@@ -6,6 +6,7 @@ plugins {
     id 'org.springframework.boot' version '3.5.14'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'jacoco'
+    id "org.sonarqube" version "5.0.0.4638" // Use latest stable version
     id 'project-report' 
     id 'org.cyclonedx.bom' version '3.3.0'
     id "org.owasp.dependencycheck" version "12.1.8"
@@ -23,6 +24,22 @@ java {
 
 repositories {
     mavenCentral()
+}
+
+sonar {
+    properties {
+        def propertiesFile = project.file("sonar-project.properties")
+        property "sonar.host.url", "http://10.0.2.15:9300"
+        if (propertiesFile.exists()) {
+            def props = new Properties()
+            propertiesFile.withInputStream { props.load(it) }
+        
+            // Dynamically inject all properties into the Sonar configuration block
+            props.each { key, value ->
+                property key, value
+            }
+        }
+    }
 }
 
 dependencies {
