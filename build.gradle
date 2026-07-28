@@ -1,5 +1,6 @@
 import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
 import org.gradle.testing.jacoco.tasks.JacocoReport
+import org.cyclonedx.model.Version
 
 plugins {
     id 'java'
