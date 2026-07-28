@@ -58,8 +58,8 @@ jacoco {
     toolVersion = '0.8.12'
 }
 
-tasks.jacocoTestReport {
-    dependsOn tasks.test
+tasks.named('jacocoTestReport') {
+    dependsOn tasks.named('test')
     reports {
         html.required = true
         xml.required = true
@@ -70,21 +70,21 @@ tasks.jacocoTestReport {
 dependencyCheck {
     // Generate both HTML (for humans) and JSON (for machines)
     formats = ['HTML', 'JSON']
-    
+    // Omitting scanConfigurations scans everything that could end up in Production but we are removing the test framework on purpose
+    // scanConfigurations = ['runtimeClasspath', 'compileClasspath']
+    skipConfigurations = ['testCompileClasspath', 'testRuntimeClasspath']
     // Fail the build if a CVSS score is 7.0 or higher
     // failBuildOnCVSS = 7.0F
 
     // Force scanning of all transitive dependencies across configuration scopes
     skipTestGroups = false 
     nvd {
-        if (project.hasProperty('nvdApiKey')) {
-            apiKey = project.property('nvdApiKey')
-        }
+        apiKey = '7d2c68c5-14d1-4201-98b2-9a745a84ff29'
     }
 }
 
-tasks.jacocoTestCoverageVerification {
-    dependsOn tasks.test
+tasks.named('jacocoTestCoverageVerification') {
+    dependsOn tasks.named('test')
     violationRules {
         rule {
             limit {
