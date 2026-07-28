@@ -52,6 +52,8 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
     finalizedBy tasks.named('jacocoTestReport')
+    // If you want the build to continue (not fail) even when tests fail, uncomment:
+    // ignoreFailures = true
 }
 
 jacoco {
@@ -59,7 +61,9 @@ jacoco {
 }
 
 tasks.named('jacocoTestReport') {
-    dependsOn tasks.named('test')
+    // Do NOT dependOn('test') -> that creates a dependency cycle with finalizedBy.
+    // Instead guarantee ordering:
+    mustRunAfter tasks.named('test')
     reports {
         html.required = true
         xml.required = true
@@ -84,7 +88,9 @@ dependencyCheck {
 }
 
 tasks.named('jacocoTestCoverageVerification') {
-    dependsOn tasks.named('test')
+    // Remove dependsOn test to avoid the failure-short-circuit cycle.
+    // Ensure it runs after the report so coverage data is available.
+    mustRunAfter tasks.named('jacocoTestReport')
     violationRules {
         rule {
             limit {
@@ -104,7 +110,10 @@ check.dependsOn tasks.named('cyclonedxBom')
 tasks.cyclonedxDirectBom {
     schemaVersion = "VERSION_16"
     includeMetadataResolution = true
-    includeConfigs = ["runtimeClasspath"]
+    includeConfigs = ["runtimeClasspath", 'compileClasspath']
+    // Leave includeConfigs unset to generate a complete SBOM
+    // If you want a cleaner application-only SBOM for a shipped Java service, then runtimeClasspath plus compileClasspath is a reasonable compromise, because that captures what the app uses to compile and run while avoiding many test-only configurations. But if your goal is “don’t miss anything,” don’t restrict it.
+//    includeConfigs = ["runtimeClasspath", "compileClasspath"]
 }
 
 // 2. Configure properties for the aggregated BOM task (handles multi-project roots)
