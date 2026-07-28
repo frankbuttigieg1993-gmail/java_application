@@ -1,17 +1,17 @@
-name: Build Code Quality Pipeline
+name: Build Sonarqube Pipeline
 run-name: ${{ github.ref_name }}.${{ github.run_number }}
 
 on:
-  # push:
-  #   branches:
-  #     - main
-  #     - 'release/**'
+  push:
+    branches:
+      - main
+      - 'release/**'
   workflow_dispatch:
 
 jobs:
   build:
     name: '-'
-    uses: frankbuttigieg1993-gmail/cicd/.github/workflows/java-build-selfhosted-scanning.yml@main
+    uses: frankbuttigieg1993-gmail/cicd/.github/workflows/java-build-selfhosted-scanning_sonarqube_using_gradle.yml@main
     permissions:
       id-token: write
       contents: write 
@@ -20,4 +20,3 @@ jobs:
     with:
       target-runner: "['self-hosted', 'linux', 'x64']"
     secrets: inherit
-### TODO - Look up Secret Inheritence
