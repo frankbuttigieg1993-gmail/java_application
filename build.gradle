@@ -68,7 +68,12 @@ tasks.jacocoTestReport {
 }
 
 dependencyCheck {
-    format = "HTML"
+    // Generate both HTML (for humans) and JSON (for machines)
+    formats = ['HTML', 'JSON']
+    
+    // Fail the build if a CVSS score is 7.0 or higher
+    // failBuildOnCVSS = 7.0F
+
     // Force scanning of all transitive dependencies across configuration scopes
     skipTestGroups = false 
     nvd {
