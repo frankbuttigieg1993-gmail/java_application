@@ -5,3 +5,10 @@ buildCache {
         enabled = true
     }
 }
+
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
