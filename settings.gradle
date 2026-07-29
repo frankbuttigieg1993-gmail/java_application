@@ -1,14 +1,13 @@
 rootProject.name = 'env-printer-springboot-project'
-
-buildCache {
-    local {
-        enabled = true
-    }
-}
-
 pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
     }
 }
+buildCache {
+    local {
+        enabled = true
+    }
+}
+
