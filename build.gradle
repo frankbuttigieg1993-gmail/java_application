@@ -78,6 +78,7 @@ dependencyCheck {
     // Omitting scanConfigurations scans everything that could end up in Production but we are removing the test framework on purpose
     // scanConfigurations = ['runtimeClasspath', 'compileClasspath']
     skipConfigurations = ['testCompileClasspath', 'testRuntimeClasspath']
+    outputDirectory = file("$buildDir/reports/dependency-check")
     // Fail the build if a CVSS score is 7.0 or higher
     // failBuildOnCVSS = 7.0F
 
@@ -120,8 +121,8 @@ tasks.cyclonedxDirectBom {
 // 2. Configure properties for the aggregated BOM task (handles multi-project roots)
 tasks.cyclonedxBom {
     schemaVersion = Version.VERSION_16
+    mustRunAfter(tasks.named('dependencyCheckAnalyze'))
     jsonOutput = file("$buildDir/reports/cyclonedx/bom.json")
     xmlOutput = file("$buildDir/reports/cyclonedx/bom.xml")
-
 }
 
