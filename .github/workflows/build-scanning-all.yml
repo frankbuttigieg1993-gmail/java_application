@@ -1,13 +1,17 @@
-name: Build Sonarqube Pipeline
+name: Build Scanning All
 run-name: ${{ github.ref_name }}.${{ github.run_number }}
 
 on:
+  push:
+    branches:
+      - main
+      - 'release/**'
   workflow_dispatch:
 
 jobs:
   build:
     name: '-'
-    uses: frankbuttigieg1993-gmail/cicd/.github/workflows/java-build-selfhosted-scanning_sonarqube_using_gradle.yml@main
+    uses: frankbuttigieg1993-gmail/cicd/.github/workflows/java-build-selfhosted-scanning-all.yml@main
     permissions:
       id-token: write
       contents: write 
