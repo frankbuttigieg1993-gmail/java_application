@@ -79,6 +79,8 @@ dependencyCheck {
     // scanConfigurations = ['runtimeClasspath', 'compileClasspath']
     skipConfigurations = ['testCompileClasspath', 'testRuntimeClasspath']
     outputDirectory = file("$buildDir/reports/dependency-check")
+    data.directory = "${System.getProperty('user.home')}/.cache/dependency-check"
+ 
     // Fail the build if a CVSS score is 7.0 or higher
     // failBuildOnCVSS = 7.0F
 
