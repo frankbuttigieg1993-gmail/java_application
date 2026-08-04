@@ -112,7 +112,7 @@ check.dependsOn tasks.jacocoTestCoverageVerification
 check.dependsOn tasks.named('cyclonedxBom')
 
 tasks.cyclonedxDirectBom {
-    schemaVersion = Version.VERSION_16
+    schemaVersion = Version.VERSION_15
     includeMetadataResolution = true
 //    includeConfigs = ["runtimeClasspath", 'compileClasspath']
     // Leave includeConfigs unset to generate a complete SBOM
@@ -122,7 +122,7 @@ tasks.cyclonedxDirectBom {
 
 // 2. Configure properties for the aggregated BOM task (handles multi-project roots)
 tasks.cyclonedxBom {
-    schemaVersion = Version.VERSION_16
+    schemaVersion = Version.VERSION_15
     mustRunAfter(tasks.named('dependencyCheckAnalyze'))
     jsonOutput = file("$buildDir/reports/cyclonedx/bom.json")
     xmlOutput = file("$buildDir/reports/cyclonedx/bom.xml")
