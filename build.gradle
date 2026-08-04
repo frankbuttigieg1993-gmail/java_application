@@ -7,7 +7,7 @@ plugins {
     id 'org.springframework.boot' version '3.5.14'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'jacoco'
-     id 'org.sonarqube' version '7.2.3.7755'
+    id 'org.sonarqube' version '7.2.3.7755'
     id 'project-report' 
     id 'org.cyclonedx.bom' version '3.3.0'
     id "org.owasp.dependencycheck" version "12.1.8"
@@ -114,7 +114,7 @@ check.dependsOn tasks.named('cyclonedxBom')
 tasks.cyclonedxDirectBom {
     schemaVersion = Version.VERSION_16
     includeMetadataResolution = true
-    includeConfigs = ["runtimeClasspath", 'compileClasspath']
+//    includeConfigs = ["runtimeClasspath", 'compileClasspath']
     // Leave includeConfigs unset to generate a complete SBOM
     // If you want a cleaner application-only SBOM for a shipped Java service, then runtimeClasspath plus compileClasspath is a reasonable compromise, because that captures what the app uses to compile and run while avoiding many test-only configurations. But if your goal is “don’t miss anything,” don’t restrict it.
 //    includeConfigs = ["runtimeClasspath", "compileClasspath"]
