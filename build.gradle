@@ -110,7 +110,7 @@ dependencyLocking {
 }
 
 check.dependsOn tasks.jacocoTestCoverageVerification
-check.dependsOn tasks.named('cyclonedxBom')
+
 
 // tasks.cyclonedxDirectBom {
 //     schemaVersion = Version.VERSION_15
@@ -129,21 +129,9 @@ check.dependsOn tasks.named('cyclonedxBom')
 //     xmlOutput = file("$buildDir/reports/cyclonedx/bom.xml")
 // }
 
-tasks.register('cyclonedxRuntimeBom', CyclonedxDirectTask) {
-    group = 'cyclonedx'
-    description = 'Generates a CycloneDX SBOM from runtimeClasspath only'
-    schemaVersion = Version.VERSION_15
-    projectType = 'application'
-    includeConfigs = ['runtimeClasspath']
+check.dependsOn tasks.named('cyclonedxBom')
 
-    includeLicenseText = true
-    includeMetadataResolution = true
-
-    jsonOutput = file("$buildDir/reports/cyclonedx/runtime-bom.json")
-    xmlOutput = file("$buildDir/reports/cyclonedx/runtime-bom.xml")
-}
-
-tasks.register('cyclonedxBom', CyclonedxDirectTask) {
+tasks.named('cyclonedxBom', CyclonedxDirectTask) {
     group = 'cyclonedx'
     schemaVersion = Version.VERSION_15
     description = 'Generates a CycloneDX SBOM from all Gradle configurations'
@@ -159,4 +147,18 @@ tasks.register('cyclonedxBom', CyclonedxDirectTask) {
 
     jsonOutput = file("$buildDir/reports/cyclonedx/bom.json")
     xmlOutput = file("$buildDir/reports/cyclonedx/bom.xml")
+}
+
+tasks.register('cyclonedxRuntimeBom', CyclonedxDirectTask) {
+    group = 'cyclonedx'
+    description = 'Generates a CycloneDX SBOM from runtimeClasspath only'
+    schemaVersion = Version.VERSION_15
+    projectType = 'application'
+    includeConfigs = ['runtimeClasspath']
+
+    includeLicenseText = true
+    includeMetadataResolution = true
+
+    jsonOutput = file("$buildDir/reports/cyclonedx/runtime-bom.json")
+    xmlOutput = file("$buildDir/reports/cyclonedx/runtime-bom.xml")
 }
