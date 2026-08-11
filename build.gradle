@@ -135,8 +135,8 @@ tasks.register('cyclonedxAllConfigsBom', CyclonedxDirectTask) {
     includeLicenseText = true
     includeMetadataResolution = true
 
-    jsonOutput = file("$buildDir/reports/cyclonedx/bom.json")
-    xmlOutput = file("$buildDir/reports/cyclonedx/bom.xml")
+    jsonOutput = file("$buildDir/reports/cyclonedx/complete-bom.json")
+    xmlOutput = file("$buildDir/reports/cyclonedx/complete-bom.xml")
 
 }
 
