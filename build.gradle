@@ -126,7 +126,7 @@ tasks.register('cyclonedxAllConfigsBom', CyclonedxDirectTask) {
     group = 'cyclonedx'
     description = 'Generates a CycloneDX SBOM from all Gradle configurations'
 
-    schemaVersion = Version.VERSION_15
+    schemaVersion = Version.VERSION_16
     projectType = 'application'
 
     // Empty means all configurations
@@ -153,7 +153,7 @@ tasks.register('cyclonedxAllConfigsBom', CyclonedxDirectTask) {
 tasks.register('cyclonedxRuntimeBom', CyclonedxDirectTask) {
     group = 'cyclonedx'
     description = 'Generates a CycloneDX SBOM from runtimeClasspath only'
-    schemaVersion = Version.VERSION_15
+    schemaVersion = Version.VERSION_16
     projectType = 'application'
     includeConfigs = ['runtimeClasspath']
 
