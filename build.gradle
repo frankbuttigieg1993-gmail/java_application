@@ -110,43 +110,22 @@ dependencyLocking {
 }
 
 check.dependsOn tasks.jacocoTestCoverageVerification
-
-
-// tasks.cyclonedxDirectBom {
-//     schemaVersion = Version.VERSION_15
-//     includeMetadataResolution = true
-// //    includeConfigs = ["runtimeClasspath", 'compileClasspath']
-//     // Leave includeConfigs unset to generate a complete SBOM
-//     // If you want a cleaner application-only SBOM for a shipped Java service, then runtimeClasspath plus compileClasspath is a reasonable compromise, because that captures what the app uses to compile and run while avoiding many test-only configurations. But if your goal is “don’t miss anything,” don’t restrict it.
-// //    includeConfigs = ["runtimeClasspath", "compileClasspath"]
-// }
-
-// // 2. Configure properties for the aggregated BOM task (handles multi-project roots)
-// tasks.cyclonedxBom {
-//     schemaVersion = Version.VERSION_15
-//     mustRunAfter(tasks.named('dependencyCheckAnalyze'))
-//     jsonOutput = file("$buildDir/reports/cyclonedx/bom.json")
-//     xmlOutput = file("$buildDir/reports/cyclonedx/bom.xml")
-// }
-
 check.dependsOn tasks.named('cyclonedxBom')
 
-tasks.named('cyclonedxBom', CyclonedxDirectTask) {
+tasks.named('cyclonedxBom') {
     group = 'cyclonedx'
-    schemaVersion = Version.VERSION_15
     description = 'Generates a CycloneDX SBOM from all Gradle configurations'
-    mustRunAfter(tasks.named('dependencyCheckAnalyze'))
-    
-    projectType = 'application'
 
-    // Empty means all configurations
-    includeConfigs = []
+    schemaVersion = Version.VERSION_15
+    projectType = 'application'
 
     includeLicenseText = true
     includeMetadataResolution = true
 
     jsonOutput = file("$buildDir/reports/cyclonedx/bom.json")
     xmlOutput = file("$buildDir/reports/cyclonedx/bom.xml")
+
+    dependsOn(tasks.named('dependencyCheckAnalyze'))
 }
 
 tasks.register('cyclonedxRuntimeBom', CyclonedxDirectTask) {
