@@ -112,12 +112,25 @@ dependencyLocking {
 check.dependsOn tasks.jacocoTestCoverageVerification
 check.dependsOn tasks.named('cyclonedxBom')
 
-tasks.named('cyclonedxBom') {
+/*
+ * Complete SBOM
+ *
+ * Includes dependencies from all Gradle configurations.
+ * Useful for:
+ * - complete dependency inventory
+ * - development/build dependency visibility
+ * - broader compliance reporting
+ */
+
+tasks.register('cyclonedxAllConfigsBom', CyclonedxDirectTask) {
     group = 'cyclonedx'
     description = 'Generates a CycloneDX SBOM from all Gradle configurations'
 
     schemaVersion = Version.VERSION_15
     projectType = 'application'
+
+    // Empty means all configurations
+    includeConfigs = []
 
     includeLicenseText = true
     includeMetadataResolution = true
@@ -125,8 +138,17 @@ tasks.named('cyclonedxBom') {
     jsonOutput = file("$buildDir/reports/cyclonedx/bom.json")
     xmlOutput = file("$buildDir/reports/cyclonedx/bom.xml")
 
-    dependsOn(tasks.named('dependencyCheckAnalyze'))
 }
+
+/*
+ * Runtime SBOM
+ *
+ * Represents dependencies used by the application at runtime.
+ * Useful for:
+ * - production dependency inventory
+ * - licence reporting
+ * - release/security reporting
+ */
 
 tasks.register('cyclonedxRuntimeBom', CyclonedxDirectTask) {
     group = 'cyclonedx'
