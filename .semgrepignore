@@ -1,0 +1,18 @@
+# Ignore everything by default
+*
+
+# Keep Gradle build file for Supply Chain analysis
+!build.gradle
+!gradle.properties
+!settings.gradle
+!Dockerfile
+
+# Keep the directories Semgrep should process
+!build/
+!build/**
+
+!helm/
+!helm/**
+
+!src/
+!src/**
