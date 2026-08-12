@@ -221,17 +221,15 @@ tasks.register('cyclonedxBuildEnvironmentBom', CyclonedxDirectTask) {
     schemaVersion = Version.VERSION_16
     projectType = 'application'
 
-    // Start with all project configurations...
     includeConfigs = []
-
-    // ...then additionally include Gradle build-environment dependencies.
     includeBuildEnvironment = true
 
     includeLicenseText = true
     includeMetadataResolution = true
 
-    jsonOutput = file("$buildDir/reports/cyclonedx/build-environment-bom.json")
-    xmlOutput = file("$buildDir/reports/cyclonedx/build-environment-bom.xml")
+    // Explicitly configure the output properties as files.
+    jsonOutput.set(file("$buildDir/reports/cyclonedx/build-environment-bom.json"))
+    xmlOutput.set(file("$buildDir/reports/cyclonedx/build-environment-bom.xml"))
 }
 
 // Generate all three SBOM views as part of the normal Gradle verification lifecycle.
