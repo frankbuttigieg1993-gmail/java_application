@@ -4,6 +4,7 @@
 # Keep Gradle build file for Supply Chain analysis
 !build.gradle
 !gradle.properties
+!gradle.lockfile
 !settings.gradle
 !Dockerfile
 
