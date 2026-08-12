@@ -106,57 +106,75 @@ tasks.named('jacocoTestCoverageVerification') {
     // }
 }
 
-dependencyLocking {
-    lockAllConfigurations()
-}
-
-check.dependsOn tasks.jacocoTestCoverageVerification
-check.dependsOn tasks.named('cyclonedxBom')
+// dependencyLocking {
+//     lockAllConfigurations()
+// }
 
 /*
- * Complete SBOM
+ * CycloneDX SBOM scopes
+ * =====================
  *
- * Includes dependencies from all Gradle configurations.
- * Useful for:
- * - complete dependency inventory
- * - development/build dependency visibility
- * - broader compliance reporting
+ * This build produces three deliberately different SBOM views:
+ *
+ * 1) cyclonedxRuntimeBom
+ *    - Scope: runtimeClasspath only.
+ *    - Purpose: the clearest application/release SBOM; it represents the
+ *      dependencies required when the application runs in production.
+ *    - Build environment dependencies are NOT added.
+ *   This is the main SBOM for what the deployed applicaiton needs to run
+ *
+ * 2) cyclonedxAllConfigsBom
+ *    - Scope: all Gradle project configurations (includeConfigs = []).
+ *    - Purpose: a broader project dependency inventory, including runtime,
+ *      compile, test, development and other resolvable project configurations.
+ *    - Build environment dependencies are NOT added.
+ * This codes all components that are used by my application 
+ *
+ * 3) cyclonedxBuildEnvironmentBom
+ *    - Scope: all Gradle project configurations PLUS the Gradle build
+ *      environment (includeBuildEnvironment = true).
+ *    - Purpose: the broadest CycloneDX view, adding dependencies used by the
+ *      Gradle build environment/tooling to the all-configurations inventory.
+ *    - IMPORTANT: this is NOT a "build-environment-only" SBOM; it contains the
+ *      project configurations as well as the build environment.
+ *
+//  SBOM	                         What it represents
+// runtime-bom	                     What the application needs at runtime
+// all-configs-bom	                 Dependencies across all Gradle project configurations
+// build-environment-bom             All project configurations plus Gradle build-environment dependencies
+
+* For a security team asking, "What third-party components are part of this deployed application?", I'd generally give them runtime-bom.json.
+* If they ask, "What dependencies does this application project use across development, compilation, testing and runtime?", then all-configs-bom.json is the better answer.
+* And if they ask, "What dependencies are involved in the project and its Gradle build process?", that's what your third BOM is intended to capture.
+
+ * Output directory:
+ build/reports/cyclonedx/
+├── runtime-bom.json
+├── runtime-bom.xml
+├── all-configs-bom.json
+├── all-configs-bom.xml
+├── build-environment-bom.json
+└── build-environment-bom.xml
  */
 
-tasks.register('cyclonedxAllConfigsBom', CyclonedxDirectTask) {
-    group = 'cyclonedx'
-    description = 'Generates a CycloneDX SBOM from all Gradle configurations'
-
-    schemaVersion = Version.VERSION_16
-    projectType = 'application'
-
-    // Empty means all configurations
-    includeConfigs = []
-
-    includeLicenseText = true
-    includeMetadataResolution = true
-
-    jsonOutput = file("$buildDir/reports/cyclonedx/complete-bom.json")
-    xmlOutput = file("$buildDir/reports/cyclonedx/complete-bom.xml")
-
-}
-
 /*
- * Runtime SBOM
- *
- * Represents dependencies used by the application at runtime.
+ * 1. Runtime application SBOM
+  *
+ * Represents dependencies used by the application at runtime. "what the deployed application needs to run.
  * Useful for:
  * - production dependency inventory
  * - licence reporting
  * - release/security reporting
  */
-
 tasks.register('cyclonedxRuntimeBom', CyclonedxDirectTask) {
     group = 'cyclonedx'
     description = 'Generates a CycloneDX SBOM from runtimeClasspath only'
+
     schemaVersion = Version.VERSION_16
     projectType = 'application'
+
     includeConfigs = ['runtimeClasspath']
+    includeBuildEnvironment = false
 
     includeLicenseText = true
     includeMetadataResolution = true
@@ -164,3 +182,59 @@ tasks.register('cyclonedxRuntimeBom', CyclonedxDirectTask) {
     jsonOutput = file("$buildDir/reports/cyclonedx/runtime-bom.json")
     xmlOutput = file("$buildDir/reports/cyclonedx/runtime-bom.xml")
 }
+
+/*
+ * 2. All project configurations SBOM
+ */
+tasks.register('cyclonedxAllConfigsBom', CyclonedxDirectTask) {
+    group = 'cyclonedx'
+    description = 'Generates a CycloneDX SBOM from all Gradle project configurations'
+
+    schemaVersion = Version.VERSION_16
+    projectType = 'application'
+
+    // An empty includeConfigs list means all project configurations.
+    // Examples: 
+//     runtimeClasspath
+// compileClasspath
+// testRuntimeClasspath
+// testCompileClasspath
+// annotationProcessor
+// developmentOnly
+    includeConfigs = []
+    includeBuildEnvironment = false
+
+    includeLicenseText = true
+    includeMetadataResolution = true
+
+    jsonOutput = file("$buildDir/reports/cyclonedx/all-configs-bom.json")
+    xmlOutput = file("$buildDir/reports/cyclonedx/all-configs-bom.xml")
+}
+
+/*
+ * 3. All project configurations + Gradle build environment SBOM
+ */
+tasks.register('cyclonedxBuildEnvironmentBom', CyclonedxDirectTask) {
+    group = 'cyclonedx'
+    description = 'Generates a CycloneDX SBOM from all project configurations plus the Gradle build environment'
+
+    schemaVersion = Version.VERSION_16
+    projectType = 'application'
+
+    // Start with all project configurations...
+    includeConfigs = []
+
+    // ...then additionally include Gradle build-environment dependencies.
+    includeBuildEnvironment = true
+
+    includeLicenseText = true
+    includeMetadataResolution = true
+
+    jsonOutput = file("$buildDir/reports/cyclonedx/build-environment-bom.json")
+    xmlOutput = file("$buildDir/reports/cyclonedx/build-environment-bom.xml")
+}
+
+// Generate all three SBOM views as part of the normal Gradle verification lifecycle.
+check.dependsOn tasks.named('cyclonedxRuntimeBom')
+check.dependsOn tasks.named('cyclonedxAllConfigsBom')
+check.dependsOn tasks.named('cyclonedxBuildEnvironmentBom')

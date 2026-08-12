@@ -1,0 +1,174 @@
+import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
+import org.gradle.testing.jacoco.tasks.JacocoReport
+import org.cyclonedx.Version
+import org.cyclonedx.gradle.CyclonedxDirectTask
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.14'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'jacoco'
+    id 'org.sonarqube' version '7.2.3.7755'
+    id 'project-report' 
+    id 'org.cyclonedx.bom' version '3.3.0'
+    id "org.owasp.dependencycheck" version "12.1.8"
+}
+
+group = 'com.example'
+version = '1.0.0'
+description = 'env-printer-springboot-project'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+sonar {
+    properties {
+        def propertiesFile = project.file("sonar-project.properties")
+        property "sonar.host.url", "http://10.0.2.15:9300"
+        if (propertiesFile.exists()) {
+            def props = new Properties()
+            propertiesFile.withInputStream { props.load(it) }
+        
+            // Dynamically inject all properties into the Sonar configuration block
+            props.each { key, value ->
+                property key, value
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.apache.commons:commons-lang3:3.14.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+    finalizedBy tasks.named('jacocoTestReport')
+    // If you want the build to continue (not fail) even when tests fail, uncomment:
+    // ignoreFailures = true
+}
+
+jacoco {
+    toolVersion = '0.8.12'
+}
+
+tasks.named('jacocoTestReport') {
+    // Do NOT dependOn('test') -> that creates a dependency cycle with finalizedBy.
+    // Instead guarantee ordering:
+    mustRunAfter tasks.named('test')
+    reports {
+        html.required = true
+        xml.required = true
+        csv.required = false
+    }
+}
+
+dependencyCheck {
+    // Generate both HTML (for humans) and JSON (for machines)
+    formats = ['HTML', 'JSON']
+    // Omitting scanConfigurations scans everything that could end up in Production but we are removing the test framework on purpose
+    // scanConfigurations = ['runtimeClasspath', 'compileClasspath']
+    skipConfigurations = ['testCompileClasspath', 'testRuntimeClasspath']
+    outputDirectory = file("$buildDir/reports/dependency-check")
+    data.directory = "${System.getProperty('user.home')}/.cache/dependency-check"
+ 
+    // Fail the build if a CVSS score is 7.0 or higher
+    // failBuildOnCVSS = 7.0F
+
+    // Force scanning of all transitive dependencies across configuration scopes
+    skipTestGroups = false 
+    nvd {
+        apiKey = '7d2c68c5-14d1-4201-98b2-9a745a84ff29'
+    }
+}
+
+tasks.named('jacocoTestCoverageVerification') {
+    // Remove dependsOn test to avoid the failure-short-circuit cycle.
+    // Ensure it runs after the report so coverage data is available.
+    mustRunAfter tasks.named('jacocoTestReport')
+    // violationRules {
+    //     rule {
+    //         limit {
+    //             minimum = 0.70
+    //         }
+    //     }
+    // }
+}
+
+dependencyLocking {
+    lockAllConfigurations()
+}
+
+check.dependsOn tasks.jacocoTestCoverageVerification
+check.dependsOn tasks.named('cyclonedxBom')
+
+/*
+ * Complete SBOM
+ *
+ * Includes dependencies from all Gradle configurations.
+ * Useful for:
+ * - complete dependency inventory
+ * - development/build dependency visibility
+ * - broader compliance reporting
+ */
+
+tasks.register('cyclonedxAllConfigsBom', CyclonedxDirectTask) {
+    group = 'cyclonedx'
+    description = 'Generates a CycloneDX SBOM from all Gradle configurations'
+
+    schemaVersion = Version.VERSION_16
+    projectType = 'application'
+
+    // Empty means Include dependencies from all resolvable project configurations. So your complete-bom.json is better described as an all-project-configurations SBOM.
+    // Examples: 
+//     runtimeClasspath
+// compileClasspath
+// testRuntimeClasspath
+// testCompileClasspath
+// annotationProcessor
+// developmentOnly
+// ...
+    includeConfigs = []
+
+    includeLicenseText = true
+    includeMetadataResolution = true
+
+    jsonOutput = file("$buildDir/reports/cyclonedx/complete-bom.json")
+    xmlOutput = file("$buildDir/reports/cyclonedx/complete-bom.xml")
+
+}
+
+/*
+ * Runtime SBOM
+ *
+ * Represents dependencies used by the application at runtime. "what the deployed application needs to run.
+ * Useful for:
+ * - production dependency inventory
+ * - licence reporting
+ * - release/security reporting
+ */
+
+tasks.register('cyclonedxRuntimeBom', CyclonedxDirectTask) {
+    group = 'cyclonedx'
+    description = 'Generates a CycloneDX SBOM from runtimeClasspath only'
+    schemaVersion = Version.VERSION_16
+    projectType = 'application'
+    includeConfigs = ['runtimeClasspath']
+
+    includeLicenseText = true
+    includeMetadataResolution = true
+
+    jsonOutput = file("$buildDir/reports/cyclonedx/runtime-bom.json")
+    xmlOutput = file("$buildDir/reports/cyclonedx/runtime-bom.xml")
+}
