@@ -31,7 +31,7 @@ jobs:
         languages: 'java'
         # Crucial: Tells CodeQL to directly parse Java files without tracing Gradle
         build-mode: none 
-        queries: security-extended
+        queries: security-and-quality
 
     # NO Gradle execution step is required here at all!
 
