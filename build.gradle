@@ -106,9 +106,9 @@ tasks.named('jacocoTestCoverageVerification') {
     // }
 }
 
-// dependencyLocking {
-//     lockAllConfigurations()
-// }
+dependencyLocking {
+    lockAllConfigurations()
+}
 
 /*
  * CycloneDX SBOM scopes
