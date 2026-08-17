@@ -1,0 +1,17 @@
+# This is a comment.
+# Lines starting with '#' are ignored.
+
+# 1. Global Owner (Catches any changes unless overridden below)
+*                      @frankbuttigieg93-png
+
+<!-- # 2. Match by Extension (All JavaScript files anywhere in the repo)
+*.js                   @js-expert-user
+
+# 3. Match a Specific Directory (Must end with a trailing slash)
+/src/components/       @org-name/frontend-team
+
+# 4. Match a Specific File relative to the root
+/docs/README.md        @documentation-manager
+
+# 5. Multiple Owners (Both will be requested to review)
+/apps/api/             @backend-lead @security-auditor -->

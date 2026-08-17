@@ -3,17 +3,19 @@ run-name: PR-${{ github.event.pull_request.number }}-${{ github.event.pull_reque
 
 on:
   pull_request:
-    branches: [ release/* ]
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
   build:
-    name: '-'
+    name: 'CI'
     uses: frankbuttigieg1993-gmail/cicd/.github/workflows/java-build-pr.yml@main
     permissions:
+      contents: write
       id-token: write
-      contents: write 
       security-events: write
+      actions: write
     with:
       target-runner: "['self-hosted', 'linux', 'x64']"
     
+ 
