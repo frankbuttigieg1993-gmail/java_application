@@ -13,14 +13,6 @@
 
 name: Snyk Container
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [ "main" ]
-  schedule:
-    - cron: '40 7 * * 5'
 
 permissions:
   contents: read
