@@ -18,6 +18,8 @@ jobs:
       security-events: write
       actions: read
       issues: write
+      pull-requests: write
+      statuses: write
     with:
       target-runner: "['self-hosted', 'linux', 'x64']"
     secrets: inherit
