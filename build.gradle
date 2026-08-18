@@ -263,8 +263,11 @@ tasks.register('verifyRuntimeSbomVulnerabilities') {
     description = 'Fails when Trivy reports a runtime SBOM vulnerability with CVSS >= the configured threshold (default 6.0)'
 
     def trivyReport = layout.buildDirectory.file('reports/cyclonedx/trivy-runtime-bom.json')
+    def policyReport = layout.buildDirectory.file('reports/cyclonedx/runtime-vulnerability-policy.md')
+
     inputs.file(trivyReport)
     inputs.property('cvssThreshold', sbomCvssThresholdProvider)
+    outputs.file(policyReport)
 
     // Resolve the threshold during configuration rather than reaching back
     // into the Project from the execution-time doLast closure.
@@ -272,8 +275,16 @@ tasks.register('verifyRuntimeSbomVulnerabilities') {
 
     doLast {
         def reportFile = trivyReport.get().asFile
+        def summaryFile = policyReport.get().asFile
+        summaryFile.parentFile.mkdirs()
 
         if (!reportFile.exists()) {
+            summaryFile.text = '''## Runtime SBOM Vulnerability Policy
+
+**Result:** ERROR
+
+The Trivy runtime SBOM report was not found.
+'''
             throw new GradleException("Trivy runtime SBOM report not found: ${reportFile}. Run the Trivy SBOM scan before this task.")
         }
 
@@ -332,15 +343,51 @@ tasks.register('verifyRuntimeSbomVulnerabilities') {
             logger.warn("${unscored.size()} Trivy vulnerability finding(s) had no numeric CVSS score and were not used to fail the CVSS gate.")
         }
 
+        violations.sort { a, b -> b.score <=> a.score }
+
         if (!violations.isEmpty()) {
             logger.error('Runtime SBOM vulnerability policy violations:')
-            logger.error(String.format('%-42s %-20s %-18s %-6s %-12s %s', 'COMPONENT', 'INSTALLED', 'CVE', 'CVSS', 'SOURCE', 'FIXED'))
-            logger.error('-' * 125)
-            violations.sort { a, b -> b.score <=> a.score }.each { v ->
-                logger.error(String.format('%-42s %-20s %-18s %-6s %-12s %s',
+            logger.error(String.format('%-42s %-20s %-18s %-8s %-6s %-12s %s',
+                'COMPONENT', 'INSTALLED', 'CVE', 'SEVERITY', 'CVSS', 'SOURCE', 'FIXED'))
+            logger.error('-' * 135)
+            violations.each { v ->
+                logger.error(String.format('%-42s %-20s %-18s %-8s %-6s %-12s %s',
                     v.component.take(42), v.installed.take(20), v.vulnerability.take(18),
-                    v.score.toPlainString(), v.source.take(12), v.fixed))
+                    v.severity.take(8), v.score.toPlainString(), v.source.take(12), v.fixed))
             }
+        }
+
+        // Always create the Markdown report before failing the task so the
+        // composite action can append it to $GITHUB_STEP_SUMMARY.
+        def escapeMarkdown = { value ->
+            (value ?: '').toString().replace('|', '\\|').replace('\r', ' ').replace('\n', ' ')
+        }
+
+        def md = new StringBuilder()
+        md << '## Runtime SBOM Vulnerability Policy\n\n'
+        md << "**Result:** ${violations.isEmpty() ? 'PASS' : 'FAIL'}  \n"
+        md << "**Threshold:** CVSS >= ${threshold}  \n"
+        md << "**Violations:** ${violations.size()}  \n"
+        md << "**Unscored findings:** ${unscored.size()}\n\n"
+
+        if (!violations.isEmpty()) {
+            md << '| Component | Version | Vulnerability | Severity | CVSS | CVSS Source | Fixed Version |\n'
+            md << '|---|---|---|---|---:|---|---|\n'
+            violations.each { v ->
+                md << "| ${escapeMarkdown(v.component)} | ${escapeMarkdown(v.installed)} | ${escapeMarkdown(v.vulnerability)} | ${escapeMarkdown(v.severity)} | ${v.score.toPlainString()} | ${escapeMarkdown(v.source)} | ${escapeMarkdown(v.fixed)} |\n"
+            }
+        } else {
+            md << "No Trivy vulnerability with a numeric CVSS score at or above ${threshold} was found.\n"
+        }
+
+        if (!unscored.isEmpty()) {
+            md << "\n> Note: ${unscored.size()} Trivy vulnerability finding(s) had no numeric CVSS score and were not used to fail this CVSS-based gate.\n"
+        }
+
+        summaryFile.text = md.toString()
+        logger.lifecycle("GitHub summary report written to: ${summaryFile}")
+
+        if (!violations.isEmpty()) {
             throw new GradleException("Runtime SBOM vulnerability policy failed: ${violations.size()} finding(s) have CVSS >= ${threshold}.")
         }
 
