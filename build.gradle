@@ -260,18 +260,13 @@ tasks.register('verifyRuntimeSbomVulnerabilities') {
     description = 'Fails when Trivy reports a runtime SBOM vulnerability with CVSS >= the configured threshold (default 6.0)'
 
     def trivyReport = layout.buildDirectory.file('reports/cyclonedx/trivy-runtime-bom.json')
-    def policyReport = layout.buildDirectory.file('reports/cyclonedx/runtime-vulnerability-policy.md')
     inputs.file(trivyReport)
-    outputs.file(policyReport)
 
     doLast {
         def threshold = (findProperty('sbomCvssThreshold') ?: '6.0') as BigDecimal
         def reportFile = trivyReport.get().asFile
-        def summaryFile = policyReport.get().asFile
-        summaryFile.parentFile.mkdirs()
 
         if (!reportFile.exists()) {
-            summaryFile.text = "# Runtime SBOM Vulnerability Policy\n\n**Result:** ERROR\n\nTrivy runtime SBOM report was not found.\n"
             throw new GradleException("Trivy runtime SBOM report not found: ${reportFile}. Run the Trivy SBOM scan before this task.")
         }
 
@@ -279,21 +274,22 @@ tasks.register('verifyRuntimeSbomVulnerabilities') {
         def violations = []
         def unscored = []
 
-        def scoreFrom = { entry ->
-            if (!(entry instanceof Map)) return null
-            for (field in ['V4Score', 'V3Score', 'V2Score']) {
-                def value = entry[field]
-                if (value instanceof Number) return new BigDecimal(value.toString())
-                if (value != null && value.toString().isNumber()) return new BigDecimal(value.toString())
-            }
-            return null
-        }
-
         (report.Results ?: []).each { result ->
             (result.Vulnerabilities ?: []).each { vuln ->
                 def cvss = vuln.CVSS instanceof Map ? vuln.CVSS : [:]
                 def severitySource = vuln.SeveritySource?.toString()
                 def preferred = severitySource ? cvss[severitySource] : null
+
+                def scoreFrom = { entry ->
+                    if (!(entry instanceof Map)) return null
+                    for (field in ['V4Score', 'V3Score', 'V2Score']) {
+                        def value = entry[field]
+                        if (value instanceof Number) return new BigDecimal(value.toString())
+                        if (value != null && value.toString().isNumber()) return new BigDecimal(value.toString())
+                    }
+                    return null
+                }
+
                 def selectedScore = scoreFrom(preferred)
                 def selectedSource = selectedScore != null ? severitySource : null
 
@@ -317,59 +313,27 @@ tasks.register('verifyRuntimeSbomVulnerabilities') {
                     fixed: vuln.FixedVersion ?: 'not available'
                 ]
 
-                if (selectedScore == null) unscored << finding
-                else if (selectedScore >= threshold) violations << finding
+                if (selectedScore == null) {
+                    unscored << finding
+                } else if (selectedScore >= threshold) {
+                    violations << finding
+                }
             }
-        }
-
-        violations.sort { a, b -> b.score <=> a.score }
-
-        // Console output: concise details of every build-blocking vulnerability.
-        logger.lifecycle('')
-        logger.lifecycle('Runtime SBOM Vulnerability Policy')
-        logger.lifecycle('=================================')
-        logger.lifecycle("Threshold: CVSS >= ${threshold}")
-        logger.lifecycle("Violations: ${violations.size()}")
-        if (!unscored.isEmpty()) logger.warn("Unscored findings: ${unscored.size()} (do not fail this CVSS gate)")
-
-        if (!violations.isEmpty()) {
-            logger.error('')
-            logger.error(String.format('%-42s %-18s %-10s %-8s %-6s %-12s %s',
-                'COMPONENT', 'CVE', 'VERSION', 'SEVERITY', 'CVSS', 'SOURCE', 'FIXED'))
-            logger.error('-' * 125)
-            violations.each { v ->
-                logger.error(String.format('%-42s %-18s %-10s %-8s %-6s %-12s %s',
-                    v.component.take(42), v.vulnerability.take(18), v.installed.take(10),
-                    v.severity.take(8), v.score.toPlainString(), v.source.take(12), v.fixed))
-            }
-        }
-
-        // Markdown output consumed by $GITHUB_STEP_SUMMARY in the composite action.
-        def md = new StringBuilder()
-        md << '## Runtime SBOM Vulnerability Policy\n\n'
-        md << "**Result:** ${violations.isEmpty() ? 'PASS' : 'FAIL'}  \n"
-        md << "**Threshold:** CVSS >= ${threshold}  \n"
-        md << "**Violations:** ${violations.size()}  \n"
-        md << "**Unscored findings:** ${unscored.size()}\n\n"
-
-        if (!violations.isEmpty()) {
-            md << '| Component | Version | Vulnerability | Severity | CVSS | CVSS Source | Fixed Version |\n'
-            md << '|---|---|---|---|---:|---|---|\n'
-            def esc = { value -> (value ?: '').toString().replace('|', '\\|').replace('\n', ' ') }
-            violations.each { v ->
-                md << "| ${esc(v.component)} | ${esc(v.installed)} | ${esc(v.vulnerability)} | ${esc(v.severity)} | ${v.score.toPlainString()} | ${esc(v.source)} | ${esc(v.fixed)} |\n"
-            }
-        } else {
-            md << "No Trivy vulnerability with a numeric CVSS score at or above ${threshold} was found.\n"
         }
 
         if (!unscored.isEmpty()) {
-            md << "\n> Note: ${unscored.size()} Trivy vulnerability finding(s) had no numeric CVSS score and were not used to fail this CVSS-based gate.\n"
+            logger.warn("${unscored.size()} Trivy vulnerability finding(s) had no numeric CVSS score and were not used to fail the CVSS gate.")
         }
-        summaryFile.text = md.toString()
-        logger.lifecycle("GitHub summary report written to: ${summaryFile}")
 
         if (!violations.isEmpty()) {
+            logger.error('Runtime SBOM vulnerability policy violations:')
+            logger.error(String.format('%-42s %-20s %-18s %-6s %-12s %s', 'COMPONENT', 'INSTALLED', 'CVE', 'CVSS', 'SOURCE', 'FIXED'))
+            logger.error('-' * 125)
+            violations.sort { a, b -> b.score <=> a.score }.each { v ->
+                logger.error(String.format('%-42s %-20s %-18s %-6s %-12s %s',
+                    v.component.take(42), v.installed.take(20), v.vulnerability.take(18),
+                    v.score.toPlainString(), v.source.take(12), v.fixed))
+            }
             throw new GradleException("Runtime SBOM vulnerability policy failed: ${violations.size()} finding(s) have CVSS >= ${threshold}.")
         }
 
