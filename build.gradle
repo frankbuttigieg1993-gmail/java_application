@@ -255,15 +255,22 @@ check.dependsOn tasks.named('cyclonedxBuildEnvironmentBom')
  *
  * Override the threshold with -PsbomCvssThreshold=<score> if required.
  */
+def sbomCvssThresholdProvider = providers.gradleProperty('sbomCvssThreshold')
+    .orElse('6.0')
+
 tasks.register('verifyRuntimeSbomVulnerabilities') {
     group = 'verification'
     description = 'Fails when Trivy reports a runtime SBOM vulnerability with CVSS >= the configured threshold (default 6.0)'
 
     def trivyReport = layout.buildDirectory.file('reports/cyclonedx/trivy-runtime-bom.json')
     inputs.file(trivyReport)
+    inputs.property('cvssThreshold', sbomCvssThresholdProvider)
+
+    // Resolve the threshold during configuration rather than reaching back
+    // into the Project from the execution-time doLast closure.
+    def threshold = sbomCvssThresholdProvider.get().toBigDecimal()
 
     doLast {
-        def threshold = (findProperty('sbomCvssThreshold') ?: '6.0') as BigDecimal
         def reportFile = trivyReport.get().asFile
 
         if (!reportFile.exists()) {
