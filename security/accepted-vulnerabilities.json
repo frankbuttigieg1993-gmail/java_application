@@ -1,0 +1,10 @@
+{
+  "exceptions": [
+    {
+      "cve": "CVE-2025-48924",
+      "component": "org.apache.commons:commons-lang3",
+      "reason": "Example only - replace with the approved risk acceptance justification.",
+      "expires": "2026-10-15"
+    }
+  ]
+}

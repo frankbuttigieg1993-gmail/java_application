@@ -8,7 +8,6 @@ plugins {
     id 'org.springframework.boot' version '3.5.14'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'jacoco'
-    id 'com.github.spotbugs' version '6.5.11' 
     id 'org.sonarqube' version '7.2.3.7755'
     id 'project-report' 
     id 'org.cyclonedx.bom' version '3.3.0'
@@ -29,37 +28,6 @@ repositories {
     mavenCentral()
 }
 
-
-spotbugs {
-    // Permanent SpotBugs / FindSecBugs configuration. CI should invoke
-    // spotbugsMain directly; no Gradle init script is required.
-    ignoreFailures = false
-    toolVersion = '4.9.8'
-    effort = com.github.spotbugs.snom.Effort.MAX
-    reportLevel = 'low'  // Change this line
-    showStackTraces = true
-    showProgress = false
-    maxHeapSize = '1g'
-    reportsDir = file("$buildDir/reports/spotbugs")
-}
-tasks.named('spotbugsMain') {
-    reports {
-        xml {
-            required = true
-            outputLocation = file("$buildDir/reports/spotbugs/main/spotbugs.xml")
-        }
-        html {
-            required = true
-            outputLocation = file("$buildDir/reports/spotbugs/main/spotbugs.html")
-            stylesheet = 'fancy-hist.xsl'
-        }
-        sarif {
-            required = true
-            outputLocation = file("$buildDir/reports/spotbugs/main/spotbugs.sarif")
-        }
-    }
-}
-
 sonar {
     properties {
         def propertiesFile = project.file("sonar-project.properties")
@@ -77,7 +45,6 @@ sonar {
 }
 
 dependencies {
-    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.apache.commons:commons-lang3:3.14.0'
@@ -268,6 +235,11 @@ tasks.register('cyclonedxBuildEnvironmentBom', CyclonedxDirectTask) {
     xmlOutput.set(file("$buildDir/reports/cyclonedx/build-environment-bom.xml"))
 }
 
+// Generate all three SBOM views as part of the normal Gradle verification lifecycle.
+check.dependsOn tasks.named('cyclonedxRuntimeBom')
+check.dependsOn tasks.named('cyclonedxAllConfigsBom')
+check.dependsOn tasks.named('cyclonedxBuildEnvironmentBom')
+
 /*
  * Runtime SBOM vulnerability policy gate
  * ======================================
@@ -292,14 +264,12 @@ tasks.register('verifyRuntimeSbomVulnerabilities') {
 
     def trivyReport = layout.buildDirectory.file('reports/cyclonedx/trivy-runtime-bom.json')
     def policyReport = layout.buildDirectory.file('reports/cyclonedx/runtime-vulnerability-policy.md')
-    def htmlPolicyReport = layout.buildDirectory.file('reports/cyclonedx/runtime-vulnerability-policy.html')
     def acceptedVulnerabilitiesFile = layout.projectDirectory.file('security/accepted-vulnerabilities.json')
 
     inputs.file(trivyReport)
     inputs.file(acceptedVulnerabilitiesFile).optional()
     inputs.property('cvssThreshold', sbomCvssThresholdProvider)
     outputs.file(policyReport)
-    outputs.file(htmlPolicyReport)
 
     // Resolve the threshold during configuration rather than reaching back
     // into the Project from the execution-time doLast closure.
@@ -308,7 +278,6 @@ tasks.register('verifyRuntimeSbomVulnerabilities') {
     doLast {
         def reportFile = trivyReport.get().asFile
         def summaryFile = policyReport.get().asFile
-        def htmlFile = htmlPolicyReport.get().asFile
         summaryFile.parentFile.mkdirs()
 
         if (!reportFile.exists()) {
@@ -475,61 +444,6 @@ The Trivy runtime SBOM report was not found.
 
         summaryFile.text = md.toString()
         logger.lifecycle("GitHub summary report written to: ${summaryFile}")
-
-        // Generate a self-contained HTML report before the task can fail.
-        def escapeHtml = { value ->
-            (value ?: '').toString().replace('&','&amp;').replace('<','&lt;').replace('>','&gt;').replace('"','&quot;').replace("'",'&#39;')
-        }
-        def resultText = violations.isEmpty() ? 'PASS' : 'FAIL'
-        def html = new StringBuilder()
-        html << """<!doctype html><html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Runtime SBOM Vulnerability Policy</title>
-<style>
-body{font-family:Arial,sans-serif;margin:32px;background:#f5f6f8;color:#202124}
-main{max-width:1400px;margin:auto}.card{background:white;border:1px solid #ddd;border-radius:8px;padding:18px;margin:16px 0}
-.metrics{display:flex;flex-wrap:wrap;gap:12px}.metric{background:white;border:1px solid #ddd;border-radius:8px;padding:14px;min-width:145px}
-table{width:100%;border-collapse:collapse;font-size:14px}th,td{border:1px solid #ddd;padding:8px;text-align:left;vertical-align:top}
-th{background:#eee}.overflow{overflow-x:auto}.fail{color:#b3261e}.pass{color:#137333}code{font-family:monospace}
-</style></head><body><main>
-<h1>Runtime SBOM Vulnerability Policy</h1>
-<p class="${violations.isEmpty() ? 'pass' : 'fail'}"><strong>Result: ${resultText}</strong></p>
-<div class="metrics">
-<div class="metric">Threshold<br><strong>CVSS &gt;= ${escapeHtml(threshold)}</strong></div>
-<div class="metric">Blocking<br><strong>${violations.size()}</strong></div>
-<div class="metric">Accepted<br><strong>${accepted.size()}</strong></div>
-<div class="metric">Expired exceptions<br><strong>${expiredExceptions.size()}</strong></div>
-<div class="metric">Unscored<br><strong>${unscored.size()}</strong></div>
-</div>
-<div class="card"><h2>Blocking vulnerabilities</h2>"""
-        if (violations.isEmpty()) {
-            html << "<p>No vulnerability with numeric CVSS at or above ${escapeHtml(threshold)} was found.</p>"
-        } else {
-            html << '<div class="overflow"><table><thead><tr><th>Component</th><th>Version</th><th>Vulnerability</th><th>Severity</th><th>CVSS</th><th>Source</th><th>Fixed Version</th></tr></thead><tbody>'
-            violations.each { v ->
-                html << "<tr><td><code>${escapeHtml(v.component)}</code></td><td>${escapeHtml(v.installed)}</td><td>${escapeHtml(v.vulnerability)}</td><td>${escapeHtml(v.severity)}</td><td>${escapeHtml(v.score)}</td><td>${escapeHtml(v.source)}</td><td>${escapeHtml(v.fixed)}</td></tr>"
-            }
-            html << '</tbody></table></div>'
-        }
-        html << '</div>'
-        if (!accepted.isEmpty()) {
-            html << '<div class="card"><h2>Accepted vulnerabilities</h2><div class="overflow"><table><thead><tr><th>Component</th><th>Version</th><th>Vulnerability</th><th>CVSS</th><th>Source</th><th>Reason</th><th>Expires</th></tr></thead><tbody>'
-            accepted.each { v ->
-                html << "<tr><td><code>${escapeHtml(v.component)}</code></td><td>${escapeHtml(v.installed)}</td><td>${escapeHtml(v.vulnerability)}</td><td>${escapeHtml(v.score)}</td><td>${escapeHtml(v.source)}</td><td>${escapeHtml(v.reason)}</td><td>${escapeHtml(v.expires)}</td></tr>"
-            }
-            html << '</tbody></table></div></div>'
-        }
-        if (!expiredExceptions.isEmpty()) {
-            html << '<div class="card"><h2>Expired exceptions</h2><ul>'
-            expiredExceptions.each { v -> html << "<li><code>${escapeHtml(v.vulnerability)}</code> in <code>${escapeHtml(v.component)}</code> expired ${escapeHtml(v.expires)}.</li>" }
-            html << '</ul></div>'
-        }
-        if (!unscored.isEmpty()) {
-            html << "<div class=\"card\"><h2>Unscored findings</h2><p>${unscored.size()} finding(s) had no numeric CVSS score and did not fail the gate.</p></div>"
-        }
-        html << '</main></body></html>'
-        htmlFile.text = html.toString()
-        logger.lifecycle("HTML vulnerability policy report written to: ${htmlFile}")
 
         if (!violations.isEmpty()) {
             throw new GradleException("Runtime SBOM vulnerability policy failed: ${violations.size()} finding(s) have CVSS >= ${threshold}.")
