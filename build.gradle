@@ -32,11 +32,7 @@ repositories {
 
 spotbugs {
     effort = 'max'
-    reportLevel = 'low'
-    reports {
-        xml.enabled = true
-//        sarif.enabled = true
-    }
+    reportLevel = 'low' // Minimum confidence level for spotbugs to include it in the report
 }
 
 sonar {
