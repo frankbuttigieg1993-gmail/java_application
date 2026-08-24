@@ -8,6 +8,7 @@ plugins {
     id 'org.springframework.boot' version '3.5.14'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'jacoco'
+    id 'com.github.spotbugs' version '6.0.0' // or latest version
     id 'org.sonarqube' version '7.2.3.7755'
     id 'project-report' 
     id 'org.cyclonedx.bom' version '3.3.0'
@@ -26,6 +27,16 @@ java {
 
 repositories {
     mavenCentral()
+}
+
+
+spotbugs {
+    effort = 'max'
+    reportLevel = 'low'
+    reports {
+        xml.enabled = true
+        sarif.enabled = true
+    }
 }
 
 sonar {
