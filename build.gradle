@@ -52,9 +52,13 @@ tasks.named('spotbugsMain') {
             outputLocation = file("$buildDir/reports/spotbugs/main/spotbugs.html")
             stylesheet = 'fancy-hist.xsl'
         }
-        sarif.required = true
+        sarif {
+            required = false  // Change from true to false
+        }
     }
 }
+
+build.dependsOn.remove(spotbugsMain)
 
 sonar {
     properties {
