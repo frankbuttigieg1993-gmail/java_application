@@ -35,13 +35,12 @@ spotbugs {
     // spotbugsMain directly; no Gradle init script is required.
     ignoreFailures = true
     effort = com.github.spotbugs.snom.Effort.MAX
-    reportLevel = com.github.spotbugs.snom.Confidence.LOW
+    reportLevel = 'low'  // Change this line
     showStackTraces = true
     showProgress = false
     maxHeapSize = '1g'
     reportsDir = file("$buildDir/reports/spotbugs")
 }
-
 tasks.named('spotbugsMain') {
     reports {
         xml {
