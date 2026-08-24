@@ -35,7 +35,7 @@ spotbugs {
     reportLevel = 'low'
     reports {
         xml.enabled = true
-        sarif.enabled = true
+//        sarif.enabled = true
     }
 }
 
