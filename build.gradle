@@ -57,15 +57,6 @@ tasks.named('spotbugsMain') {
         }
     }
 }
-// This makes sure that spotbugs doesn't run by default when executing the gradle build command
-
-tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
-    onlyIf {
-        !gradle.startParameter.taskNames.any { requestedTask ->
-            requestedTask == 'build' || requestedTask.endsWith(':build')
-        }
-    }
-}
 
 sonar {
     properties {
