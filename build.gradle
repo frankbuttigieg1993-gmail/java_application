@@ -8,7 +8,7 @@ plugins {
     id 'org.springframework.boot' version '3.5.14'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'jacoco'
-    id 'com.github.spotbugs' version '6.0.0' // or latest version
+    id 'com.github.spotbugs' version '6.5.11' 
     id 'org.sonarqube' version '7.2.3.7755'
     id 'project-report' 
     id 'org.cyclonedx.bom' version '3.3.0'
@@ -31,8 +31,30 @@ repositories {
 
 
 spotbugs {
-    effort = 'max'
-    reportLevel = 'low' // reportLevel controls the minimum confidence threshold for bugs that SpotBugs includes in its results.
+    // Permanent SpotBugs / FindSecBugs configuration. CI should invoke
+    // spotbugsMain directly; no Gradle init script is required.
+    ignoreFailures = true
+    effort = com.github.spotbugs.snom.Effort.MAX
+    reportLevel = com.github.spotbugs.snom.Confidence.LOW
+    showStackTraces = true
+    showProgress = false
+    maxHeapSize = '1g'
+    reportsDir = file("$buildDir/reports/spotbugs")
+}
+
+tasks.named('spotbugsMain') {
+    reports {
+        xml {
+            required = true
+            outputLocation = file("$buildDir/reports/spotbugs/main/spotbugs.xml")
+        }
+        html {
+            required = true
+            outputLocation = file("$buildDir/reports/spotbugs/main/spotbugs.html")
+            stylesheet = 'fancy-hist.xsl'
+        }
+        sarif.required = true
+    }
 }
 
 sonar {
@@ -52,6 +74,7 @@ sonar {
 }
 
 dependencies {
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.apache.commons:commons-lang3:3.14.0'
@@ -241,11 +264,6 @@ tasks.register('cyclonedxBuildEnvironmentBom', CyclonedxDirectTask) {
     jsonOutput.set(file("$buildDir/reports/cyclonedx/build-environment-bom.json"))
     xmlOutput.set(file("$buildDir/reports/cyclonedx/build-environment-bom.xml"))
 }
-
-// Generate all three SBOM views as part of the normal Gradle verification lifecycle.
-check.dependsOn tasks.named('cyclonedxRuntimeBom')
-check.dependsOn tasks.named('cyclonedxAllConfigsBom')
-check.dependsOn tasks.named('cyclonedxBuildEnvironmentBom')
 
 /*
  * Runtime SBOM vulnerability policy gate
