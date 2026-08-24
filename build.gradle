@@ -32,7 +32,7 @@ repositories {
 
 spotbugs {
     effort = 'max'
-    reportLevel = 'low' // Minimum confidence level for spotbugs to include it in the report
+    reportLevel = 'low' // reportLevel controls the minimum confidence threshold for bugs that SpotBugs includes in its results.
 }
 
 sonar {
