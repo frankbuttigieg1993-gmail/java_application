@@ -33,7 +33,8 @@ repositories {
 spotbugs {
     // Permanent SpotBugs / FindSecBugs configuration. CI should invoke
     // spotbugsMain directly; no Gradle init script is required.
-    ignoreFailures = true
+    ignoreFailures = false
+    toolVersion = '4.9.8'
     effort = com.github.spotbugs.snom.Effort.MAX
     reportLevel = 'low'  // Change this line
     showStackTraces = true
@@ -53,7 +54,8 @@ tasks.named('spotbugsMain') {
             stylesheet = 'fancy-hist.xsl'
         }
         sarif {
-            required = false  // Change from true to false
+            required = true
+            outputLocation = file("$buildDir/reports/spotbugs/main/spotbugs.sarif")
         }
     }
 }
