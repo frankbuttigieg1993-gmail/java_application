@@ -14,4 +14,4 @@
 /docs/README.md        @documentation-manager
 
 # 5. Multiple Owners (Both will be requested to review)
-/apps/api/             @backend-lead @security-auditor -->
+/apps/api/             @backend-lead @security-auditor --> 
