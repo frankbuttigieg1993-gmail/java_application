@@ -19,5 +19,6 @@ jobs:
       statuses: write
     with:
       target-runner: "['self-hosted', 'linux', 'x64']"
+    secrets: inherit
     
  
