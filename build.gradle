@@ -283,8 +283,7 @@ tasks.register('cyclonedxBuildEnvironmentBom', CyclonedxDirectTask) {
  *
  * Override the threshold with -PsbomCvssThreshold=<score> if required.
  */
-def sbomCvssThresholdProvider = providers.gradleProperty('sbomCvssThreshold')
-    .orElse('6.0')
+
 apply from: "${rootDir}/gradle/runtime-vulnerability-policy.gradle"
 
 
