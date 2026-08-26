@@ -159,7 +159,7 @@ dependencyLocking {
  *    - Build environment dependencies are NOT added.
  *   This is the main SBOM for what the deployed applicaiton needs to run
  *
- * 2) cyclonedxAllConfigsBom
+ * 2) cyclonedxApplicationBom
  *    - Scope: all Gradle project configurations (includeConfigs = []).
  *    - Purpose: a broader project dependency inventory, including runtime,
  *      compile, test, development and other resolvable project configurations.
@@ -176,7 +176,7 @@ dependencyLocking {
  *
 //  SBOM	                         What it represents
 // runtime-bom	                     What the application needs at runtime
-// all-configs-bom	                 Dependencies across all Gradle project configurations
+// cyclonedxApplicationBom	                 Dependencies across all Gradle project configurations
 // build-environment-bom             All project configurations plus Gradle build-environment dependencies
 
 * For a security team asking, "What third-party components are part of this deployed application?", I'd generally give them runtime-bom.json.
@@ -222,9 +222,9 @@ tasks.register('cyclonedxRuntimeBom', CyclonedxDirectTask) {
 /*
  * 2. All project configurations SBOM
  */
-tasks.register('cyclonedxAllConfigsBom', CyclonedxDirectTask) {
+tasks.register('cyclonedxApplicationBom', CyclonedxDirectTask) {
     group = 'cyclonedx'
-    description = 'Generates a CycloneDX SBOM from all Gradle project configurations'
+    description = 'Generates a CycloneDX Application SBOM from all Gradle project configurations'
 
     schemaVersion = Version.VERSION_16
     projectType = 'application'
@@ -243,8 +243,8 @@ tasks.register('cyclonedxAllConfigsBom', CyclonedxDirectTask) {
     includeLicenseText = true
     includeMetadataResolution = true
 
-    jsonOutput = file("$buildDir/reports/cyclonedx/all-configs-bom.json")
-    xmlOutput = file("$buildDir/reports/cyclonedx/all-configs-bom.xml")
+    jsonOutput = file("$buildDir/reports/cyclonedx/application-sbom.json")
+    xmlOutput = file("$buildDir/reports/cyclonedx/application-sbom.xml")
 }
 
 /*
@@ -285,256 +285,6 @@ tasks.register('cyclonedxBuildEnvironmentBom', CyclonedxDirectTask) {
  */
 def sbomCvssThresholdProvider = providers.gradleProperty('sbomCvssThreshold')
     .orElse('6.0')
+apply from: "${rootDir}/gradle/runtime-vulnerability-policy.gradle"
 
-tasks.register('verifyRuntimeSbomVulnerabilities') {
-    group = 'verification'
-    description = 'Fails when Trivy reports a runtime SBOM vulnerability with CVSS >= the configured threshold (default 6.0)'
 
-    def trivyReport = layout.buildDirectory.file('reports/cyclonedx/trivy-runtime-bom.json')
-    def policyReport = layout.buildDirectory.file('reports/cyclonedx/runtime-vulnerability-policy.md')
-    def htmlPolicyReport = layout.buildDirectory.file('reports/cyclonedx/runtime-vulnerability-policy.html')
-    def acceptedVulnerabilitiesFile = layout.projectDirectory.file('security/accepted-vulnerabilities.json')
-
-    inputs.file(trivyReport)
-    inputs.file(acceptedVulnerabilitiesFile).optional()
-    inputs.property('cvssThreshold', sbomCvssThresholdProvider)
-    outputs.file(policyReport)
-    outputs.file(htmlPolicyReport)
-
-    // Resolve the threshold during configuration rather than reaching back
-    // into the Project from the execution-time doLast closure.
-    def threshold = sbomCvssThresholdProvider.get().toBigDecimal()
-
-    doLast {
-        def reportFile = trivyReport.get().asFile
-        def summaryFile = policyReport.get().asFile
-        def htmlFile = htmlPolicyReport.get().asFile
-        summaryFile.parentFile.mkdirs()
-
-        if (!reportFile.exists()) {
-            summaryFile.text = '''## Runtime SBOM Vulnerability Policy
-
-**Result:** ERROR
-
-The Trivy runtime SBOM report was not found.
-'''
-            throw new GradleException("Trivy runtime SBOM report not found: ${reportFile}. Run the Trivy SBOM scan before this task.")
-        }
-
-        def report = new groovy.json.JsonSlurper().parse(reportFile)
-        def violations = []
-        def accepted = []
-        def expiredExceptions = []
-        def unscored = []
-
-        def exceptionFile = acceptedVulnerabilitiesFile.asFile
-        def exceptions = []
-        if (exceptionFile.exists()) {
-            def exceptionDocument = new groovy.json.JsonSlurper().parse(exceptionFile)
-            exceptions = exceptionDocument.exceptions ?: []
-            exceptions.eachWithIndex { exception, index ->
-                ['cve', 'component', 'reason', 'expires'].each { field ->
-                    if (!exception[field]?.toString()?.trim()) {
-                        throw new GradleException("Invalid vulnerability exception at index ${index}: '${field}' is required.")
-                    }
-                }
-                try {
-                    java.time.LocalDate.parse(exception.expires.toString())
-                } catch (Exception ignored) {
-                    throw new GradleException("Invalid expiry '${exception.expires}' for ${exception.cve}/${exception.component}; expected YYYY-MM-DD.")
-                }
-            }
-        }
-        def today = java.time.LocalDate.now(java.time.ZoneOffset.UTC)
-
-        (report.Results ?: []).each { result ->
-            (result.Vulnerabilities ?: []).each { vuln ->
-                def cvss = vuln.CVSS instanceof Map ? vuln.CVSS : [:]
-                def severitySource = vuln.SeveritySource?.toString()
-                def preferred = severitySource ? cvss[severitySource] : null
-
-                def scoreFrom = { entry ->
-                    if (!(entry instanceof Map)) return null
-                    for (field in ['V4Score', 'V3Score', 'V2Score']) {
-                        def value = entry[field]
-                        if (value instanceof Number) return new BigDecimal(value.toString())
-                        if (value != null && value.toString().isNumber()) return new BigDecimal(value.toString())
-                    }
-                    return null
-                }
-
-                def selectedScore = scoreFrom(preferred)
-                def selectedSource = selectedScore != null ? severitySource : null
-
-                if (selectedScore == null) {
-                    cvss.each { source, entry ->
-                        def candidate = scoreFrom(entry)
-                        if (candidate != null && (selectedScore == null || candidate > selectedScore)) {
-                            selectedScore = candidate
-                            selectedSource = source.toString()
-                        }
-                    }
-                }
-
-                def finding = [
-                    component: vuln.PkgName ?: vuln.PkgID ?: result.Target ?: 'unknown',
-                    installed: vuln.InstalledVersion ?: 'unknown',
-                    vulnerability: vuln.VulnerabilityID ?: 'unknown',
-                    score: selectedScore,
-                    source: selectedSource ?: 'none',
-                    severity: vuln.Severity ?: 'UNKNOWN',
-                    fixed: vuln.FixedVersion ?: 'not available'
-                ]
-
-                if (selectedScore == null) {
-                    unscored << finding
-                } else if (selectedScore >= threshold) {
-                    def exception = exceptions.find {
-                        it.cve.toString().equalsIgnoreCase(finding.vulnerability.toString()) &&
-                        it.component.toString() == finding.component.toString()
-                    }
-                    if (exception != null) {
-                        def expiry = java.time.LocalDate.parse(exception.expires.toString())
-                        def acceptedFinding = finding + [reason: exception.reason.toString(), expires: exception.expires.toString()]
-                        if (expiry.isBefore(today)) {
-                            expiredExceptions << acceptedFinding
-                            violations << finding
-                        } else {
-                            accepted << acceptedFinding
-                        }
-                    } else {
-                        violations << finding
-                    }
-                }
-            }
-        }
-
-        if (!unscored.isEmpty()) {
-            logger.warn("${unscored.size()} Trivy vulnerability finding(s) had no numeric CVSS score and were not used to fail the CVSS gate.")
-        }
-
-        violations.sort { a, b -> b.score <=> a.score }
-        accepted.sort { a, b -> b.score <=> a.score }
-        logger.lifecycle("Accepted vulnerabilities: ${accepted.size()}")
-        if (!expiredExceptions.isEmpty()) logger.error("Expired vulnerability exceptions: ${expiredExceptions.size()}")
-
-        if (!violations.isEmpty()) {
-            logger.error('Runtime SBOM vulnerability policy violations:')
-            logger.error(String.format('%-42s %-20s %-18s %-8s %-6s %-12s %s',
-                'COMPONENT', 'INSTALLED', 'CVE', 'SEVERITY', 'CVSS', 'SOURCE', 'FIXED'))
-            logger.error('-' * 135)
-            violations.each { v ->
-                logger.error(String.format('%-42s %-20s %-18s %-8s %-6s %-12s %s',
-                    v.component.take(42), v.installed.take(20), v.vulnerability.take(18),
-                    v.severity.take(8), v.score.toPlainString(), v.source.take(12), v.fixed))
-            }
-        }
-
-        // Always create the Markdown report before failing the task so the
-        // composite action can append it to $GITHUB_STEP_SUMMARY.
-        def escapeMarkdown = { value ->
-            (value ?: '').toString().replace('|', '\\|').replace('\r', ' ').replace('\n', ' ')
-        }
-
-        def md = new StringBuilder()
-        md << '## Runtime SBOM Vulnerability Policy\n\n'
-        md << "**Result:** ${violations.isEmpty() ? 'PASS' : 'FAIL'}  \n"
-        md << "**Threshold:** CVSS >= ${threshold}  \n"
-        md << "**Violations:** ${violations.size()}  \n"
-        md << "**Unscored findings:** ${unscored.size()}\n\n"
-
-        if (!violations.isEmpty()) {
-            md << '| Component | Version | Vulnerability | Severity | CVSS | CVSS Source | Fixed Version |\n'
-            md << '|---|---|---|---|---:|---|---|\n'
-            violations.each { v ->
-                md << "| ${escapeMarkdown(v.component)} | ${escapeMarkdown(v.installed)} | ${escapeMarkdown(v.vulnerability)} | ${escapeMarkdown(v.severity)} | ${v.score.toPlainString()} | ${escapeMarkdown(v.source)} | ${escapeMarkdown(v.fixed)} |\n"
-            }
-        } else {
-            md << "No Trivy vulnerability with a numeric CVSS score at or above ${threshold} was found.\n"
-        }
-
-        if (!accepted.isEmpty()) {
-            md << '\n### Accepted vulnerabilities\n\n'
-            md << '| Component | Version | Vulnerability | CVSS | Source | Reason | Expires |\n'
-            md << '|---|---|---|---:|---|---|---|\n'
-            accepted.each { v ->
-                md << "| ${escapeMarkdown(v.component)} | ${escapeMarkdown(v.installed)} | ${escapeMarkdown(v.vulnerability)} | ${v.score.toPlainString()} | ${escapeMarkdown(v.source)} | ${escapeMarkdown(v.reason)} | ${escapeMarkdown(v.expires)} |\n"
-            }
-        }
-
-        if (!expiredExceptions.isEmpty()) {
-            md << '\n> **Expired exceptions:** These vulnerabilities are blocking again because their exceptions expired.\n\n'
-            expiredExceptions.each { v ->
-                md << "- `${escapeMarkdown(v.vulnerability)}` in `${escapeMarkdown(v.component)}` expired on `${escapeMarkdown(v.expires)}`.\n"
-            }
-        }
-
-        if (!unscored.isEmpty()) {
-            md << "\n> Note: ${unscored.size()} Trivy vulnerability finding(s) had no numeric CVSS score and were not used to fail this CVSS-based gate.\n"
-        }
-
-        summaryFile.text = md.toString()
-        logger.lifecycle("GitHub summary report written to: ${summaryFile}")
-
-        // Generate a self-contained HTML report before the task can fail.
-        def escapeHtml = { value ->
-            (value ?: '').toString().replace('&','&amp;').replace('<','&lt;').replace('>','&gt;').replace('"','&quot;').replace("'",'&#39;')
-        }
-        def resultText = violations.isEmpty() ? 'PASS' : 'FAIL'
-        def html = new StringBuilder()
-        html << """<!doctype html><html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Runtime SBOM Vulnerability Policy</title>
-<style>
-body{font-family:Arial,sans-serif;margin:32px;background:#f5f6f8;color:#202124}
-main{max-width:1400px;margin:auto}.card{background:white;border:1px solid #ddd;border-radius:8px;padding:18px;margin:16px 0}
-.metrics{display:flex;flex-wrap:wrap;gap:12px}.metric{background:white;border:1px solid #ddd;border-radius:8px;padding:14px;min-width:145px}
-table{width:100%;border-collapse:collapse;font-size:14px}th,td{border:1px solid #ddd;padding:8px;text-align:left;vertical-align:top}
-th{background:#eee}.overflow{overflow-x:auto}.fail{color:#b3261e}.pass{color:#137333}code{font-family:monospace}
-</style></head><body><main>
-<h1>Runtime SBOM Vulnerability Policy</h1>
-<p class="${violations.isEmpty() ? 'pass' : 'fail'}"><strong>Result: ${resultText}</strong></p>
-<div class="metrics">
-<div class="metric">Threshold<br><strong>CVSS &gt;= ${escapeHtml(threshold)}</strong></div>
-<div class="metric">Blocking<br><strong>${violations.size()}</strong></div>
-<div class="metric">Accepted<br><strong>${accepted.size()}</strong></div>
-<div class="metric">Expired exceptions<br><strong>${expiredExceptions.size()}</strong></div>
-<div class="metric">Unscored<br><strong>${unscored.size()}</strong></div>
-</div>
-<div class="card"><h2>Blocking vulnerabilities</h2>"""
-        if (violations.isEmpty()) {
-            html << "<p>No vulnerability with numeric CVSS at or above ${escapeHtml(threshold)} was found.</p>"
-        } else {
-            html << '<div class="overflow"><table><thead><tr><th>Component</th><th>Version</th><th>Vulnerability</th><th>Severity</th><th>CVSS</th><th>Source</th><th>Fixed Version</th></tr></thead><tbody>'
-            violations.each { v ->
-                html << "<tr><td><code>${escapeHtml(v.component)}</code></td><td>${escapeHtml(v.installed)}</td><td>${escapeHtml(v.vulnerability)}</td><td>${escapeHtml(v.severity)}</td><td>${escapeHtml(v.score)}</td><td>${escapeHtml(v.source)}</td><td>${escapeHtml(v.fixed)}</td></tr>"
-            }
-            html << '</tbody></table></div>'
-        }
-        html << '</div>'
-        if (!accepted.isEmpty()) {
-            html << '<div class="card"><h2>Accepted vulnerabilities</h2><div class="overflow"><table><thead><tr><th>Component</th><th>Version</th><th>Vulnerability</th><th>CVSS</th><th>Source</th><th>Reason</th><th>Expires</th></tr></thead><tbody>'
-            accepted.each { v ->
-                html << "<tr><td><code>${escapeHtml(v.component)}</code></td><td>${escapeHtml(v.installed)}</td><td>${escapeHtml(v.vulnerability)}</td><td>${escapeHtml(v.score)}</td><td>${escapeHtml(v.source)}</td><td>${escapeHtml(v.reason)}</td><td>${escapeHtml(v.expires)}</td></tr>"
-            }
-            html << '</tbody></table></div></div>'
-        }
-        if (!expiredExceptions.isEmpty()) {
-            html << '<div class="card"><h2>Expired exceptions</h2><ul>'
-            expiredExceptions.each { v -> html << "<li><code>${escapeHtml(v.vulnerability)}</code> in <code>${escapeHtml(v.component)}</code> expired ${escapeHtml(v.expires)}.</li>" }
-            html << '</ul></div>'
-        }
-        if (!unscored.isEmpty()) {
-            html << "<div class=\"card\"><h2>Unscored findings</h2><p>${unscored.size()} finding(s) had no numeric CVSS score and did not fail the gate.</p></div>"
-        }
-        html << '</main></body></html>'
-        htmlFile.text = html.toString()
-        logger.lifecycle("HTML vulnerability policy report written to: ${htmlFile}")
-
-        if (!violations.isEmpty()) {
-            throw new GradleException("Runtime SBOM vulnerability policy failed: ${violations.size()} finding(s) have CVSS >= ${threshold}.")
-        }
-
-        logger.lifecycle("Runtime SBOM vulnerability policy passed: no Trivy finding has CVSS >= ${threshold}.")
-    }
-}
