@@ -29,6 +29,9 @@ repositories {
     mavenCentral()
 }
 
+tasks.named('jar') {
+    enabled = false
+}
 
 spotbugs {
     // Permanent SpotBugs / FindSecBugs configuration. CI should invoke
