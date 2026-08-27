@@ -6,19 +6,15 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * INTENTIONALLY VULNERABLE CODEQL VALIDATION CASE.
  *
- * Add this file only to the PR/source branch so that the SQL injection is a
- * newly introduced issue relative to the PR target branch.
- *
- * DO NOT MERGE OR DEPLOY THIS FILE.
- * Delete it after validating the CodeQL workflow.
+ * Keep this file only on the test/source branch.
+ * DO NOT MERGE OR DEPLOY IT.
  */
 @RestController
 public class CodeQlNewSqlInjectionController {
@@ -29,16 +25,8 @@ public class CodeQlNewSqlInjectionController {
         this.dataSource = dataSource;
     }
 
-    /*
-     * Intentionally vulnerable to SQL injection.
-     *
-     * Data flow:
-     * HTTP request parameter -> SQL string concatenation -> Statement.executeQuery()
-     */
     @GetMapping("/codeql-test/sql-injection")
-    public String sqlInjection(HttpServletRequest request) throws Exception {
-        String username = request.getParameter("username");
-
+    public String sqlInjection(@RequestParam String username) throws Exception {
         String sql =
             "SELECT username FROM users WHERE username = '" +
             username +
