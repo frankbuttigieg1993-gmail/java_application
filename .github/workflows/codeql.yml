@@ -18,94 +18,14 @@ permissions:
   security-events: write
 
 jobs:
-  analyze:
-    name: Analyze Code
+  codeql:
+    name: CodeQL
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
+      - name: CodeQL Security Scan
+        uses: frankbuttigieg1993-gmail/cicd/.github/actions/codeql-scan@main
         with:
-          distribution: temurin
           java-version: '21'
-          cache: gradle
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Verify CodeQL Test Source
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          echo "=== CodeQL test source ==="
-
-          find src/main/java \
-            -name 'CodeQlNewSqlInjectionController.java' \
-            -print
-
-          echo
-          echo "=== SQL injection validation endpoint ==="
-
-          grep -R \
-            -n \
-            'codeql-test/sql-injection' \
-            src/main/java || true
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
-        with:
-          languages: java
-          queries: security-extended
-
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v4
-
-      - name: Build application
-        run: ./gradlew assemble
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4
-        with:
-          category: "/language:java"
-          output: ../results
-          upload: always
-
-      - name: Inspect CodeQL SARIF
-        if: always()
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          echo "=== CodeQL SARIF files ==="
-          find ../results -maxdepth 2 -type f -print || true
-
-          echo
-          echo "=== CodeQL findings ==="
-
-          if [[ ! -f ../results/java.sarif ]]; then
-            echo "CodeQL SARIF file was not generated."
-            exit 0
-          fi
-
-          RESULT_COUNT="$(
-            jq '[.runs[]?.results[]?] | length' ../results/java.sarif
-          )"
-
-          echo "Total SARIF results: ${RESULT_COUNT}"
-          echo
-
-          jq -r '
-            .runs[]?.results[]? |
-            [
-              (.ruleId // "N/A"),
-              (.level // "N/A"),
-              (.message.text // "N/A"),
-              (.locations[0].physicalLocation.artifactLocation.uri // "N/A"),
-              ((.locations[0].physicalLocation.region.startLine // 0) | tostring)
-            ] |
-            @tsv
-          ' ../results/java.sarif
+          query-suite: security-extended
+          enforce-policy: 'true'
