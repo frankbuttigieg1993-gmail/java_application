@@ -3,8 +3,14 @@ run-name: PR-${{ github.event.pull_request.number }}-${{ github.event.pull_reque
 
 on:
   pull_request:
-    branches: [ main ]
-  workflow_dispatch:
+    branches:
+      - main
+      - 'release/*'
+      - develop
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
   build:
