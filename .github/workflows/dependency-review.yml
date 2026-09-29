@@ -25,7 +25,7 @@ jobs:
           java-version: '21'
 
       - name: Generate dependency graph
-        uses: gradle/actions/dependency-submission@v6
+        uses: gradle/actions/dependency-submission@v5
 
       - name: Dependency Review
         uses: actions/dependency-review-action@v4
