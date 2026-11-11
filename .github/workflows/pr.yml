@@ -16,6 +16,7 @@ jobs:
       security-events: write
       actions: write
       pull-requests: write
+      issues: write
       statuses: write
     with:
       target-runner: "['self-hosted', 'linux', 'x64']"
