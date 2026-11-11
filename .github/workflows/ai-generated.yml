@@ -1,0 +1,20 @@
+name: AI Generated Gradle Build and Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gradle-build-and-test:
+    name: Gradle Build and Test
+    uses: frankbuttigieg1993-gmail/cicd/.github/workflows/ai-generated.yml@feature/ai-generated-gradle
+    permissions:
+      contents: read
+    with:
+      java-version: "21"
+      gradle-tasks: clean build
+      upload-test-results: true
+      artifact-name: java-application-test-results
+      artifact-retention-days: 7
