@@ -19,6 +19,6 @@ jobs:
       issues: write
       statuses: write
     with:
-      target-runner: "['self-hosted', 'linux', 'x64']"
+      target-runner: "['self-hosted', 'Linux', 'X64']"
     
  
