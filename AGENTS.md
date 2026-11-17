@@ -77,7 +77,7 @@ All **other existing workflow edits** require separate, explicit, file-specific 
 - Make only authorised changes. Review the diff for unrelated files before committing.
 - Push task branches and open **Draft** PRs targeting `main` for meaningful changes; cross-link related `cicd` and `java_application` PRs.
 - Keep the application PR Draft during CICD feature-branch validation, CICD human review/merge, release publication and application release-based revalidation. CICD PR may progress to review first under its own promotion gate.
-- After the immutable CICD release is adopted and required checks and functional verification pass on the latest relevant application SHA, mark the application PR **Ready for Review** and request review from `frankbuttigieg-93`. If GitHub disallows the reviewer request, report that accurately.
+- After the immutable CICD release is adopted and required checks and functional verification pass on the latest relevant application SHA, mark the application PR **Ready for Review** and request review from `frankbuttigieg93-png`. If GitHub disallows the reviewer request, report that accurately.
 - Never approve or merge a PR, bypass required reviews, or modify branch protection or rulesets.
 
 ## Validation and evidence requirements
