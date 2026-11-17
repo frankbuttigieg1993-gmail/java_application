@@ -80,6 +80,14 @@ All **other existing workflow edits** require separate, explicit, file-specific 
 - After the immutable CICD release is adopted and required checks and functional verification pass on the latest relevant application SHA, mark the application PR **Ready for Review** and request review from `frankbuttigieg93-png`. If GitHub disallows the reviewer request, report that accurately.
 - Never approve or merge a PR, bypass required reviews, or modify branch protection or rulesets.
 
+### Historical branches and pull requests
+
+A branch name alone does not establish that a local or remote branch belongs to the current execution. Before reusing or replacing a task branch, check the repository, local worktree and branch ref, current local head SHA, remote branch ref and SHA, and intended changes. Preserve existing commits and worktree changes.
+
+A pull request is a separate identity from its head branch. Determine whether a PR belongs to the current work using its repository, state, head repository/ref/SHA, base repository/ref, commits and relevant metadata (including title, body and task context) together. A matching branch name or SHA alone is not conclusive. Treat merged and closed PRs as historical evidence, not automatic blockers; treat an open PR as current only when its refs, current head and metadata correspond to this task. Verify that the current branch contains the intended changes and that no appropriate active PR already exists before creating a new Draft PR.
+
+If GitHub rejects PR creation, preserve the exact error, use read-only checks to distinguish a repository restriction from transient API, network or authentication failure, and use only bounded retries when appropriate. Do not force-push, delete or recreate branches, overwrite commits, reopen or alter historical PRs, or take another destructive fallback action. Stop and report the blocker if it cannot be resolved within existing task authorization. Do not request extra approval solely because a historical PR used the same branch name. These rules do not change pipeline selection, authorization, HITL checkpoints or repository protections.
+
 ## Validation and evidence requirements
 
 - Validate workflow syntax, references, triggers, permissions and job ordering; run relevant Gradle/tests where applicable.
