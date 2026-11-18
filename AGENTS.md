@@ -91,7 +91,7 @@ If GitHub rejects PR creation, preserve the exact error, use read-only checks to
 ## Validation and evidence requirements
 
 - Validate workflow syntax, references, triggers, permissions and job ordering; run relevant Gradle/tests where applicable.
-- Verify the **actual requested functionality**, not merely a green workflow/job/step status.
+- Verify the **actual requested functionality**, not merely a green workflow/job/step status. Where applicable, validate relevant edge cases and failure conditions, and compare observed output with acceptance criteria.
 - Identify the workflow, job and step; inspect **actual step logs** and compare observed output with acceptance criteria. A successful exit code alone is insufficient.
 - Record repository, branch, latest head SHA, run URL/ID, job and step conclusions, relevant log excerpts, expected-vs-observed results, and outstanding limitations in the Draft PR and final report.
 - Treat missing, skipped, pending, cancelled, or unverified required checks as **not passed**. Investigate and remediate failures only within authorised scope, then rerun validation.
@@ -111,7 +111,7 @@ A review request is not an approval. GitHub permissions, required checks and bra
 
 - For CICD integration work, read `cicd/.github/Standard CICD Engineering, Release & Application Promotion Workflow.md` and the CICD `github-actions-development` Skill from the multi-root workspace. If either is unavailable, report that explicitly; do not assume files in another repository are automatically loaded.
 - Follow the 16-step process: both Draft PRs before final feature validation; CICD PR labelled and reviewed first; CICD release created after merge; then update the application Draft PR to the new immutable release and revalidate before application review.
-- The CICD repository has **one semantic version** for all its workflows and actions. Application callers consume an explicit immutable CICD release tag in their final merged configuration. Temporary CICD feature-branch refs are for validation only.
+- The CICD repository has **one semantic version** for all its workflows and actions. Temporary CICD feature-branch refs are development and integration references only. Application callers must consume an explicit immutable published CICD release tag in their final merged configuration.
 - PR Pipeline selection automatically authorises necessary edits to `java_application/.github/workflows/pr.yml` for both temporary feature-branch validation and the subsequent released-version transition. Preserve all unrelated triggers, permissions, jobs and checks. Build Pipeline selection alone does not authorise changes to existing Java caller workflows.
 - Verify the published tag exists and points to the actual merged CICD commit before updating the application PR. Confirm the PR pipeline reruns on the new application head SHA and inspect the actual executing step logs and expected functional output.
 - Do not promote the application PR merely because the CICD PR merged or its release succeeded. The application PR has its own final validation and review gate.
