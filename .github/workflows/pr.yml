@@ -15,7 +15,7 @@ on:
 jobs:
   build:
     name: 'CI'
-    uses: frankbuttigieg1993-gmail/cicd/.github/workflows/java-build-pr.yml@feature/exercise-4-remediation
+    uses: frankbuttigieg1993-gmail/cicd/.github/workflows/java-build-pr.yml@v3.1.1
     permissions:
       contents: write
       id-token: write
