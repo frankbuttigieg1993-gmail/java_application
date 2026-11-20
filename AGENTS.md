@@ -4,7 +4,7 @@
 
 ## Human quick reference — standard 16-step process
 
-The detailed canonical process is `cicd/.github/Standard CICD Engineering, Release & Application Promotion Workflow.md`. This table is a quick reference; repository policy below governs authorisation and completion.
+The detailed canonical process is `cicd/.github/Canoncial Engineering Lifecycle.md`. This table is a quick reference; repository policy below governs authorisation and completion.
 
 | Step | Activity |
 |---|---|
@@ -27,7 +27,7 @@ The detailed canonical process is `cicd/.github/Standard CICD Engineering, Relea
 
 ## Shared engineering procedure
 
-For cross-repository CI/CD work, read this repository's `AGENTS.md`, `cicd/AGENTS.md`, the central `cicd/.github/skills/github-actions-development/SKILL.md`, and `cicd/.github/Standard CICD Engineering, Release & Application Promotion Workflow.md`. The CICD repository owns the one shared execution Skill; do not create or maintain a duplicate application Skill. If these resources are unavailable, report the limitation rather than inventing a replacement procedure.
+For cross-repository CI/CD work, read this repository's `AGENTS.md`, `cicd/AGENTS.md`, the central `cicd/.github/skills/github-actions-development/SKILL.md`, and `cicd/.github/Canoncial Engineering Lifecycle.md`. The CICD repository owns the one shared execution Skill; do not create or maintain a duplicate application Skill. If these resources are unavailable, report the limitation rather than inventing a replacement procedure.
 
 ## Repository responsibilities
 
@@ -109,7 +109,7 @@ A review request is not an approval. GitHub permissions, required checks and bra
 
 ## Versioned CICD consumption and canonical workflow
 
-- For CICD integration work, read `cicd/.github/Standard CICD Engineering, Release & Application Promotion Workflow.md` and the CICD `github-actions-development` Skill from the multi-root workspace. If either is unavailable, report that explicitly; do not assume files in another repository are automatically loaded.
+- For CICD integration work, read `cicd/.github/Canoncial Engineering Lifecycle.md` and the CICD `github-actions-development` Skill from the multi-root workspace. If either is unavailable, report that explicitly; do not assume files in another repository are automatically loaded.
 - Follow the 16-step process: both Draft PRs before final feature validation; CICD PR labelled and reviewed first; CICD release created after merge; then update the application Draft PR to the new immutable release and revalidate before application review.
 - The CICD repository has **one semantic version** for all its workflows and actions. Temporary CICD feature-branch refs are development and integration references only. Application callers must consume an explicit immutable published CICD release tag in their final merged configuration.
 - PR Pipeline selection automatically authorises necessary edits to `java_application/.github/workflows/pr.yml` for both temporary feature-branch validation and the subsequent released-version transition. Preserve all unrelated triggers, permissions, jobs and checks. Build Pipeline selection alone does not authorise changes to existing Java caller workflows.
